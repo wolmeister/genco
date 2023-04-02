@@ -1,0 +1,8 @@
+{
+  "name": "@genco/root",
+  "version": "0.0.1",
+  "description": "GENCO - Code generator",
+  "author": "Victor Wolmeister",
+  "license": "UNLICENSED",
+  "scripts": {}
+}
