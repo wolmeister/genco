@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Debug
+tsconfig.tsbuildinfo
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Production
+build/
+dist/
+
+# Local files
+*.local
+.env
+
+# MacOS
+.DS_Store

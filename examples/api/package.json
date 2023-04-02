@@ -5,5 +5,22 @@
   "author": "Victor Wolmeister",
   "license": "UNLICENSED",
   "private": "true",
-  "scripts": {}
+  "scripts": {
+    "dev": "ts-node-dev --no-notify --respawn --clear -r dotenv/config src/index.ts",
+    "build": "rimraf dist && tsc"
+  },
+  "dependencies": {
+    "@fastify/swagger": "^8.3.1",
+    "@fastify/swagger-ui": "^1.6.0",
+    "fastify": "^4.15.0",
+    "winston": "^3.8.2"
+  },
+  "devDependencies": {
+    "@tsconfig/node18": "^1.0.1",
+    "@types/node": "^18.15.11",
+    "dotenv": "^16.0.3",
+    "rimraf": "^4.4.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.0.3"
+  }
 }
