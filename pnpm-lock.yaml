@@ -1,0 +1,11 @@
+lockfileVersion: '6.0'
+
+importers:
+
+  .: {}
+
+  examples/api: {}
+
+  examples/web: {}
+
+  generator: {}

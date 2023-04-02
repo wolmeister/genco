@@ -1,7 +1,7 @@
 {
-  "name": "@genco/root",
+  "name": "@genco/web-example",
   "version": "0.0.1",
-  "description": "GENCO - Code generator repository root",
+  "description": "GENCO - Web example project",
   "author": "Victor Wolmeister",
   "license": "UNLICENSED",
   "private": "true",

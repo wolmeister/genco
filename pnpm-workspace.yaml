@@ -1,0 +1,4 @@
+packages:
+  - 'generator'
+  - 'examples/api'
+  - 'examples/web'
