@@ -7,12 +7,19 @@
   "private": "true",
   "scripts": {
     "dev": "ts-node-dev --no-notify --respawn --clear -r dotenv/config src/index.ts",
-    "build": "rimraf dist && tsc"
+    "build": "rimraf dist && tsc",
+    "generate": "prisma generate",
+    "prisma": "prisma"
   },
   "dependencies": {
+    "@devoxa/prisma-relay-cursor-connection": "^2.2.2",
+    "@fastify/error": "^3.2.0",
     "@fastify/swagger": "^8.3.1",
     "@fastify/swagger-ui": "^1.6.0",
+    "@prisma/client": "^4.12.0",
+    "@sinclair/typebox": "^0.26.8",
     "fastify": "^4.15.0",
+    "prisma": "^4.12.0",
     "winston": "^3.8.2"
   },
   "devDependencies": {

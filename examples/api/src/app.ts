@@ -2,7 +2,7 @@ import fastify from 'fastify';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 
-// import { authRoutes } from './modules/auth';
+import { gameRoutes } from './modules/game';
 
 const app = fastify();
 
@@ -28,6 +28,7 @@ app.register(swagger, {
     ],
     tags: [
       // { name: 'Auth', description: 'Auth related end-points' },
+      { name: 'Game', description: 'Game related end-points' },
     ],
   },
 });
@@ -36,6 +37,6 @@ app.register(swaggerUi, {
   routePrefix: '/docs',
 });
 
-// app.register(authRoutes);
+app.register(gameRoutes);
 
 export { app };

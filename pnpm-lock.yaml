@@ -6,15 +6,30 @@ importers:
 
   examples/api:
     dependencies:
+      '@devoxa/prisma-relay-cursor-connection':
+        specifier: ^2.2.2
+        version: 2.2.2(@prisma/client@4.12.0)
+      '@fastify/error':
+        specifier: ^3.2.0
+        version: 3.2.0
       '@fastify/swagger':
         specifier: ^8.3.1
         version: 8.3.1
       '@fastify/swagger-ui':
         specifier: ^1.6.0
         version: 1.6.0
+      '@prisma/client':
+        specifier: ^4.12.0
+        version: 4.12.0(prisma@4.12.0)
+      '@sinclair/typebox':
+        specifier: ^0.26.8
+        version: 0.26.8
       fastify:
         specifier: ^4.15.0
         version: 4.15.0
+      prisma:
+        specifier: ^4.12.0
+        version: 4.12.0
       winston:
         specifier: ^3.8.2
         version: 3.8.2
@@ -62,6 +77,15 @@ packages:
       colorspace: 1.1.4
       enabled: 2.0.0
       kuler: 2.0.0
+    dev: false
+
+  /@devoxa/prisma-relay-cursor-connection@2.2.2(@prisma/client@4.12.0):
+    resolution: {integrity: sha512-nR8/f8DQXNG6a1C3wNRs2YZa6eDCuygz/fzwt6a/ARMsr0asnMK95NhFkZ2jN+ksKHA/AtfvVZvG7UVtJOB09Q==}
+    peerDependencies:
+      '@prisma/client': ^2.0.0 || ^3.0.0 || ^4.0.0
+    dependencies:
+      '@prisma/client': 4.12.0(prisma@4.12.0)
+      graphql-fields: 2.0.3
     dev: false
 
   /@fastify/accept-negotiator@1.1.0:
@@ -154,6 +178,33 @@ packages:
   /@lukeed/ms@2.0.1:
     resolution: {integrity: sha512-Xs/4RZltsAL7pkvaNStUQt7netTkyxrS0K+RILcVr3TRMS/ToOg4I6uNfhB9SlGsnWBym4U+EaXq0f0cEMNkHA==}
     engines: {node: '>=8'}
+    dev: false
+
+  /@prisma/client@4.12.0(prisma@4.12.0):
+    resolution: {integrity: sha512-j9/ighfWwux97J2dS15nqhl60tYoH8V0IuSsgZDb6bCFcQD3fXbXmxjYC8GHhIgOk3lB7Pq+8CwElz2MiDpsSg==}
+    engines: {node: '>=14.17'}
+    requiresBuild: true
+    peerDependencies:
+      prisma: '*'
+    peerDependenciesMeta:
+      prisma:
+        optional: true
+    dependencies:
+      '@prisma/engines-version': 4.12.0-67.659ef412370fa3b41cd7bf6e94587c1dfb7f67e7
+      prisma: 4.12.0
+    dev: false
+
+  /@prisma/engines-version@4.12.0-67.659ef412370fa3b41cd7bf6e94587c1dfb7f67e7:
+    resolution: {integrity: sha512-JIHNj5jlXb9mcaJwakM0vpgRYJIAurxTUqM0iX0tfEQA5XLZ9ONkIckkhuAKdAzocZ+80GYg7QSsfpjg7OxbOA==}
+    dev: false
+
+  /@prisma/engines@4.12.0:
+    resolution: {integrity: sha512-0alKtnxhNB5hYU+ymESBlGI4b9XrGGSdv7Ud+8TE/fBNOEhIud0XQsAR+TrvUZgS4na5czubiMsODw0TUrgkIA==}
+    requiresBuild: true
+    dev: false
+
+  /@sinclair/typebox@0.26.8:
+    resolution: {integrity: sha512-fvAkOrUWndf5vjptkW+4TeTH84/bILWQHgk7rbbzT8trZxW+b84lr8dZQPM/r7cGNRFxDaJYsMjHCikEYyAHaw==}
     dev: false
 
   /@tsconfig/node10@1.0.9:
@@ -585,6 +636,10 @@ packages:
       path-scurry: 1.6.3
     dev: true
 
+  /graphql-fields@2.0.3:
+    resolution: {integrity: sha512-x3VE5lUcR4XCOxPIqaO4CE+bTK8u6gVouOdpQX9+EKHr+scqtK5Pp/l8nIGqIpN1TUlkKE6jDCCycm/WtLRAwA==}
+    dev: false
+
   /has@1.0.3:
     resolution: {integrity: sha512-f2dvO0VU6Oej7RkWJGrehjbzMAjFp5/VKPp5tTpWIV4JHHZK1/BxbFRtf/siA2SWTe09caDmVtYYzWEIbBS4zw==}
     engines: {node: '>= 0.4.0'}
@@ -842,6 +897,15 @@ packages:
       safe-stable-stringify: 2.4.3
       sonic-boom: 3.3.0
       thread-stream: 2.3.0
+    dev: false
+
+  /prisma@4.12.0:
+    resolution: {integrity: sha512-xqVper4mbwl32BWzLpdznHAYvYDWQQWK2tBfXjdUD397XaveRyAP7SkBZ6kFlIg8kKayF4hvuaVtYwXd9BodAg==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      '@prisma/engines': 4.12.0
     dev: false
 
   /process-warning@2.1.0:
