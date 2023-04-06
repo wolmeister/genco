@@ -1,5 +1,4 @@
 import createError, { FastifyError } from '@fastify/error';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { isPrismaError } from '../../common/prisma-error';
 
 import { logger } from '../../logger';
