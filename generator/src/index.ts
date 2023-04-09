@@ -14,8 +14,7 @@ import { paramCase, pascalCase, camelCase, snakeCase } from 'change-case';
 const payload = {
   extends: '',
   config: {
-    rootPath:
-      'C:\\Users\\Devel\\Desktop\\Projects\\Victor\\genco\\examples\\api',
+    rootPath: '/home/victor/projects/genco/examples/api',
     tsconfigFilePath: 'tsconfig.json',
     modulesFolderPath: 'src/modules',
     appFilePath: 'src/app.ts',
@@ -1221,6 +1220,101 @@ async function run() {
         }
       }
     }
+  }
+
+  if (
+    payload.operations.findById ||
+    payload.operations.create ||
+    payload.operations.update ||
+    payload.operations.delete
+  ) {
+    errorsFile.addFunction({
+      name: 'formatFind' + pascalCase(model) + 'Error',
+      parameters: [
+        {
+          name: 'error',
+          type: 'unknown',
+        },
+      ],
+      returnType: 'FastifyError',
+      isExported: true,
+      statements: writer => {
+        writer
+          .write(
+            `if (error instanceof Error && error.name === 'NotFoundError')`
+          )
+          .block(() => {
+            writer.write(`return new ${pascalCase(model)}NotFoundError();`);
+          });
+
+        writer.writeLine(
+          `logger.error('Unexpected error while finding ${pascalCase(
+            model
+          )}', error);`
+        );
+        writer.writeLine(`return new Unexpected${pascalCase(model)}Error();`);
+      },
+    });
+  }
+
+  if (payload.operations.create || payload.operations.update) {
+    errorsFile.addFunction({
+      name: 'formatCreateUpdate' + pascalCase(model) + 'Error',
+      parameters: [
+        {
+          name: 'error',
+          type: 'unknown',
+        },
+      ],
+      returnType: 'FastifyError',
+      isExported: true,
+      statements: writer => {
+        writer.write(`if (isPrismaError(error))`).block(() => {
+          writer.writeLine('// No ' + camelCase(model) + ' found');
+          writer.write(`if (error.code === 'P2025')`).block(() => {
+            writer.write(`return new ${pascalCase(model)}NotFoundError();`);
+          });
+
+          // TODO- Add consstraint violation
+        });
+
+        writer.writeLine(
+          `logger.error('Unexpected error while creating/updating ${pascalCase(
+            model
+          )}', error);`
+        );
+        writer.writeLine(`return new Unexpected${pascalCase(model)}Error();`);
+      },
+    });
+  }
+
+  if (payload.operations.delete) {
+    errorsFile.addFunction({
+      name: 'formatDelete' + pascalCase(model) + 'Error',
+      parameters: [
+        {
+          name: 'error',
+          type: 'unknown',
+        },
+      ],
+      returnType: 'FastifyError',
+      isExported: true,
+      statements: writer => {
+        writer.write(`if (isPrismaError(error))`).block(() => {
+          writer.writeLine('// No ' + camelCase(model) + ' found');
+          writer.write(`if (error.code === 'P2025')`).block(() => {
+            writer.write(`return new ${pascalCase(model)}NotFoundError();`);
+          });
+        });
+
+        writer.writeLine(
+          `logger.error('Unexpected error while deleting ${pascalCase(
+            model
+          )}', error);`
+        );
+        writer.writeLine(`return new Unexpected${pascalCase(model)}Error();`);
+      },
+    });
   }
 
   await errorsFile.save();
