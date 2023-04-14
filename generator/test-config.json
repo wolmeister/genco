@@ -1,0 +1,41 @@
+{
+  "api": {
+    "rootPath": "/home/victor/projects/genco/examples/api"
+  },
+  "overwrite": true,
+  "model": "UserProfile",
+  "fields": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "unique": false,
+      "validations": {
+        "minLength": 2
+      }
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "required": true,
+      "unique": true,
+      "immutable": true
+    },
+    "age": {
+      "type": "int",
+      "required": true,
+      "validations": {
+        "min": 18,
+        "max": 150
+      }
+    },
+    "address": {
+      "type": "string",
+      "required": false
+    },
+    "receiveNotifications": {
+      "type": "boolean",
+      "required": true,
+      "default": true
+    }
+  }
+}
