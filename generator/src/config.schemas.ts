@@ -72,7 +72,7 @@ export const configSchema = z.object({
     rootPath: z.string(),
     tsconfigFilePath: z.string().default('tsconfig.json'),
     modulesFolderPath: z.string().default('src/modules'),
-    appFilePath: z.string().default('src/app.ts'),
+    appFilePath: z.string().default('src/app'),
     appVariableName: z.string().default('app'),
     prismaFilePath: z.string().default('prisma/schema.prisma'),
     prismaClientFilePath: z.string().default('src/prisma'),

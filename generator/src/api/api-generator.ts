@@ -9,15 +9,16 @@ import { ServiceGenerator } from './service-generator';
 import { ErrorsGenerator } from './errors-generator';
 
 export class ApiGenerator {
-  constructor(private config: Config) {}
+  private readonly kebabCaseModel: string;
+  constructor(private config: Config) {
+    this.kebabCaseModel = kebabCase(this.config.model);
+  }
 
   async generate(): Promise<void> {
-    const kebabCaseModel = kebabCase(this.config.model);
-
     const modulesFolderPath = path.join(
       this.config.api.rootPath,
       this.config.api.modulesFolderPath,
-      kebabCaseModel
+      this.kebabCaseModel
     );
 
     // Delete existing module
@@ -31,7 +32,7 @@ export class ApiGenerator {
 
     // Generate routes
     const routesFile = tsProject.createSourceFile(
-      path.join(modulesFolderPath, `./${kebabCaseModel}.routes.ts`)
+      path.join(modulesFolderPath, `./${this.kebabCaseModel}.routes.ts`)
     );
     const routesGenerator = new RoutesGenerator(this.config);
     await routesGenerator.generate(routesFile);
@@ -39,7 +40,7 @@ export class ApiGenerator {
 
     // Generate schemas
     const schemasFile = tsProject.createSourceFile(
-      path.join(modulesFolderPath, `./${kebabCaseModel}.schemas.ts`)
+      path.join(modulesFolderPath, `./${this.kebabCaseModel}.schemas.ts`)
     );
     const schemasGenerator = new SchemasGenerator(this.config);
     await schemasGenerator.generate(schemasFile);
@@ -47,7 +48,7 @@ export class ApiGenerator {
 
     // Generate service
     const serviceFile = tsProject.createSourceFile(
-      path.join(modulesFolderPath, `./${kebabCaseModel}.service.ts`)
+      path.join(modulesFolderPath, `./${this.kebabCaseModel}.service.ts`)
     );
     const serviceGenerator = new ServiceGenerator(this.config);
     await serviceGenerator.generate(serviceFile);
@@ -55,12 +56,21 @@ export class ApiGenerator {
 
     // Generate errors
     const errorsFile = tsProject.createSourceFile(
-      path.join(modulesFolderPath, `./${kebabCaseModel}.errors.ts`)
+      path.join(modulesFolderPath, `./${this.kebabCaseModel}.errors.ts`)
     );
     const errorsGenerator = new ErrorsGenerator(this.config);
     await errorsGenerator.generate(errorsFile);
     await errorsFile.save();
+
+    // Generate index
+    const indexFile = tsProject.createSourceFile(path.join(modulesFolderPath, 'index.ts'));
+    await this.generateIndex(indexFile);
+    await indexFile.save();
   }
 
-  private async generateIndex(file: SourceFile): Promise<void> {}
+  private async generateIndex(file: SourceFile): Promise<void> {
+    file.addExportDeclarations([{ moduleSpecifier: `./${this.kebabCaseModel}.routes` }]);
+    file.addExportDeclarations([{ moduleSpecifier: `./${this.kebabCaseModel}.schemas` }]);
+    file.addExportDeclarations([{ moduleSpecifier: `./${this.kebabCaseModel}.service` }]);
+  }
 }

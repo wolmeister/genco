@@ -1,18 +1,9 @@
-import { existsSync, mkdirSync, rmSync } from 'fs';
+import { existsSync } from 'fs';
 import path from 'path';
-import {
-  CodeBlockWriter,
-  MethodSignatureStructure,
-  OptionalKind,
-  Project,
-  StructureKind,
-  VariableDeclarationKind,
-  Writers,
-} from 'ts-morph';
 import { program } from 'commander';
 
-import { Config, configSchema } from './config.schemas';
-import { readFile, rm } from 'fs/promises';
+import { configSchema } from './config.schemas';
+import { readFile } from 'fs/promises';
 import { ApiGenerator } from './api/api-generator';
 
 async function run() {
@@ -38,7 +29,7 @@ async function run() {
   const rawConfig = JSON.parse(rawConfigBuffer.toString());
   const parsedConfig = configSchema.safeParse(rawConfig);
   if (parsedConfig.success === false) {
-    // TODO - Formar error
+    // TODO - Format error
     console.error('Invalid config', parsedConfig.error);
     return;
   }
@@ -46,46 +37,6 @@ async function run() {
   // Start the generator
   const apiGenerator = new ApiGenerator(parsedConfig.data);
   await apiGenerator.generate();
-  // const config = parsedConfig.data;
-  // const moduleFolderPath = path.join(
-  //   config.backend.rootPath,
-  //   config.backend.modulesFolderPath,
-  //   paramCase(config.model)
-  // );
-
-  // // Delete existing module
-  // if (config.overwrite) {
-  //   await rm(moduleFolderPath, { force: true, recursive: true });
-  // }
-
-  // const tsProject = new Project({
-  //   tsConfigFilePath: path.join(
-  //     payload.config.rootPath,
-  //     payload.config.tsconfigFilePath
-  //   ),
-  // });
-
-  // // index.ts
-  // const model = paramCase(payload.model);
-  // const indexFile = tsProject.createSourceFile(
-  //   path.join(moduleFolderPath, 'index.ts')
-  // );
-  // indexFile.addExportDeclarations([{ moduleSpecifier: `./${model}.routes` }]);
-  // indexFile.addExportDeclarations([{ moduleSpecifier: `./${model}.schemas` }]);
-  // indexFile.addExportDeclarations([{ moduleSpecifier: `./${model}.service` }]);
-
-  // await indexFile.save();
-
-  // // model.service
-
-  // await serviceFile.save();
-
-  // // model.errors
-  // const errorsFile = tsProject.createSourceFile(
-  //   path.join(moduleFolderPath, `./${model}.errors.ts`)
-  // );
-
-  // await errorsFile.save();
 
   console.log('Done');
 }
