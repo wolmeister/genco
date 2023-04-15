@@ -213,7 +213,7 @@ export class ErrorsGenerator {
       namedImports: ['isPrismaError'],
     });
 
-    const loggerPath = path.join(this.config.api.rootPath, this.config.api.loggerPath);
+    const loggerPath = path.join(this.config.api.rootPath, this.config.api.loggerFilePath);
     const loggerRelativePath = path.relative(path.dirname(file.getFilePath()), loggerPath);
     file.addImportDeclaration({
       moduleSpecifier: loggerRelativePath,

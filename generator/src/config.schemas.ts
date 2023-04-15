@@ -66,6 +66,29 @@ export const fieldSchema = z.discriminatedUnion('type', [
 
 export type Field = z.infer<typeof fieldSchema>;
 
+export const publicPermissionSchema = z.object({
+  type: z.literal('public'),
+});
+
+export const authenticatedPermissionSchema = z.object({
+  type: z.literal('authenticated'),
+});
+
+export const rolePermissionSchema = z.object({
+  type: z.literal('role'),
+  role: z.string().optional(),
+});
+
+export const permissionSchema = z
+  .discriminatedUnion('type', [
+    publicPermissionSchema,
+    authenticatedPermissionSchema,
+    rolePermissionSchema,
+  ])
+  .default({ type: 'public' });
+
+export type Permission = z.infer<typeof permissionSchema>;
+
 export const configSchema = z.object({
   extends: z.string().optional(),
   api: z.object({
@@ -78,7 +101,8 @@ export const configSchema = z.object({
     prismaClientFilePath: z.string().default('src/prisma'),
     prismaErrorUtilsFilePath: z.string().default('src/common/prisma-error'),
     typeboxTypesFilePath: z.string().default('src/common/typebox-types'),
-    loggerPath: z.string().default('src/logger'),
+    checkPermissionFilePath: z.string().default('src/modules/auth'),
+    loggerFilePath: z.string().default('src/logger'),
   }),
   overwrite: z.boolean().default(false),
   model: z.string(),
@@ -89,6 +113,15 @@ export const configSchema = z.object({
       create: z.boolean().default(true),
       update: z.boolean().default(true),
       delete: z.boolean().default(true),
+    })
+    .default({}),
+  permissions: z
+    .object({
+      findMultiple: permissionSchema,
+      findById: permissionSchema,
+      create: permissionSchema,
+      update: permissionSchema,
+      delete: permissionSchema,
     })
     .default({}),
   fields: z.record(z.string(), fieldSchema),

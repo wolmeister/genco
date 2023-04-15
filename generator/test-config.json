@@ -4,6 +4,13 @@
   },
   "overwrite": true,
   "model": "UserProfile",
+  "permissions": {
+    "findMultiple": { "type": "authenticated" },
+    "findById": { "type": "authenticated" },
+    "create": { "type": "public" },
+    "update": { "type": "role" },
+    "delete": { "type": "role" }
+  },
   "fields": {
     "name": {
       "type": "string",

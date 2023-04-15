@@ -1,8 +1,9 @@
+import path from 'path';
 import { CodeBlockWriter, SourceFile } from 'ts-morph';
 
-import { Config } from '../config.schemas';
-import { camelCase, kebabCase, pascalCase } from '../utils/string.utils';
-import { writeObject } from '../utils/writer.utils';
+import { Config, Permission } from '../config.schemas';
+import { camelCase, kebabCase, pascalCase, quote } from '../utils/string.utils';
+import { objectToString, WritableObject, writeObject } from '../utils/writer.utils';
 
 export class RoutesGenerator {
   private readonly pascalCaseModel: string;
@@ -78,6 +79,10 @@ export class RoutesGenerator {
           200: `Find${this.pluralPascalCaseModel}ResponseSchema`,
         },
       },
+      onRequest: `checkPermission(${this.serializePermission(
+        this.config.permissions.findMultiple,
+        'findMultiple'
+      )})`,
     });
     writer
       .write(',')
@@ -113,6 +118,10 @@ export class RoutesGenerator {
           200: `${this.pascalCaseModel}ResponseSchema`,
         },
       },
+      onRequest: `checkPermission(${this.serializePermission(
+        this.config.permissions.findById,
+        'findById'
+      )})`,
     });
     writer
       .write(',')
@@ -148,6 +157,10 @@ export class RoutesGenerator {
           '201': `${this.pascalCaseModel}ResponseSchema`,
         },
       },
+      onRequest: `checkPermission(${this.serializePermission(
+        this.config.permissions.create,
+        'create'
+      )})`,
     });
     writer
       .write(',')
@@ -185,6 +198,10 @@ export class RoutesGenerator {
           '200': `${this.pascalCaseModel}ResponseSchema`,
         },
       },
+      onRequest: `checkPermission(${this.serializePermission(
+        this.config.permissions.update,
+        'update'
+      )})`,
     });
     writer
       .write(',')
@@ -220,6 +237,10 @@ export class RoutesGenerator {
           '200': `${this.pascalCaseModel}ResponseSchema`,
         },
       },
+      onRequest: `checkPermission(${this.serializePermission(
+        this.config.permissions.delete,
+        'delete'
+      )})`,
     });
     writer
       .write(',')
@@ -248,6 +269,20 @@ export class RoutesGenerator {
     file.addImportDeclaration({
       moduleSpecifier: `./${this.kebabCaseModel}.service`,
       namedImports: [`${this.pascalCaseModel}Service`],
+    });
+
+    const checkPermissionPath = path.join(
+      this.config.api.rootPath,
+      this.config.api.checkPermissionFilePath
+    );
+    const checkPermissionRelativePath = path.relative(
+      path.dirname(file.getFilePath()),
+      checkPermissionPath
+    );
+
+    file.addImportDeclaration({
+      moduleSpecifier: checkPermissionRelativePath,
+      namedImports: ['checkPermission'],
     });
 
     const schemaImportDeclaration = file.addImportDeclaration({
@@ -291,5 +326,21 @@ export class RoutesGenerator {
         `Update${this.pascalCaseModel}Schema`,
       ]);
     }
+  }
+
+  private serializePermission(permission: Permission, operation: string): string {
+    const permissionObject: WritableObject = {
+      type: quote(permission.type),
+    };
+
+    if (permission.type === 'role') {
+      let role = permission.role;
+      if (!role) {
+        role = `${this.kebabCaseModel}:${kebabCase(operation)}`;
+      }
+      permissionObject.role = quote(role);
+    }
+
+    return objectToString(permissionObject);
   }
 }
