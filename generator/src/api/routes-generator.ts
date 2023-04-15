@@ -26,38 +26,39 @@ export class RoutesGenerator {
   }
 
   private addRoutes(file: SourceFile): void {
-    file.addVariableStatement({
+    file.addFunction({
       isExported: true,
-      declarationKind: VariableDeclarationKind.Const,
-      declarations: [
+      name: `get${this.pascalCaseModel}Routes`,
+      parameters: [
         {
-          name: `${this.camelCaseModel}Routes`,
-          type: 'FastifyPluginAsync',
-          initializer: writer => {
-            writer.write('async server =>').block(() => {
-              if (this.config.operations.findMultiple) {
-                this.addFindMultipleRoute(writer);
-              }
-
-              if (this.config.operations.findById) {
-                this.addFindByIdRoute(writer);
-              }
-
-              if (this.config.operations.create) {
-                this.addCreateRoute(writer);
-              }
-
-              if (this.config.operations.update) {
-                this.addUpdateRoute(writer);
-              }
-
-              if (this.config.operations.delete) {
-                this.addDeleteRoute(writer);
-              }
-            });
-          },
+          name: `${this.camelCaseModel}Service`,
+          type: `${this.pascalCaseModel}Service`,
         },
       ],
+      returnType: 'FastifyPluginAsync',
+      statements: writer => {
+        writer.write('return async server =>').block(() => {
+          if (this.config.operations.findMultiple) {
+            this.addFindMultipleRoute(writer);
+          }
+
+          if (this.config.operations.findById) {
+            this.addFindByIdRoute(writer);
+          }
+
+          if (this.config.operations.create) {
+            this.addCreateRoute(writer);
+          }
+
+          if (this.config.operations.update) {
+            this.addUpdateRoute(writer);
+          }
+
+          if (this.config.operations.delete) {
+            this.addDeleteRoute(writer);
+          }
+        });
+      },
     });
   }
 
@@ -88,7 +89,7 @@ export class RoutesGenerator {
           .write('const ')
           .write(this.pluralCamelCaseModel)
           .write(' = await ')
-          .write(this.pascalCaseModel + 'Service')
+          .write(this.camelCaseModel + 'Service')
           .write('.find')
           .write(this.pluralPascalCaseModel)
           .write('(request.query);')
@@ -126,7 +127,7 @@ export class RoutesGenerator {
           .write('const ')
           .write(this.camelCaseModel)
           .write(' = await ')
-          .write(this.pascalCaseModel + 'Service')
+          .write(this.camelCaseModel + 'Service')
           .write('.find')
           .write(this.pascalCaseModel)
           .write('ById(request.params.id);')
@@ -164,7 +165,7 @@ export class RoutesGenerator {
           .write('const ')
           .write(this.camelCaseModel)
           .write(' = await ')
-          .write(this.pascalCaseModel + 'Service')
+          .write(this.camelCaseModel + 'Service')
           .write('.create')
           .write(this.pascalCaseModel)
           .write('(request.body);')
@@ -204,7 +205,7 @@ export class RoutesGenerator {
           .write('const ')
           .write(this.camelCaseModel)
           .write(' = await ')
-          .write(this.pascalCaseModel + 'Service')
+          .write(this.camelCaseModel + 'Service')
           .write('.update')
           .write(this.pascalCaseModel)
           .write('(request.params.id, request.body);')
@@ -242,7 +243,7 @@ export class RoutesGenerator {
           .write('const ')
           .write(this.camelCaseModel)
           .write(' = await ')
-          .write(this.pascalCaseModel + 'Service')
+          .write(this.camelCaseModel + 'Service')
           .write('.delete')
           .write(this.pascalCaseModel)
           .write('(request.params.id);')
