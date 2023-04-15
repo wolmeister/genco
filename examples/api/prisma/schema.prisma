@@ -12,5 +12,5 @@ model Game {
   name      String   @unique
   summary   String?
   updatedAt DateTime @updatedAt
-  createdAt DateTime @default(now())
+  createdAt Decimal  @default(now())
 }

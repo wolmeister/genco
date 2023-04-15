@@ -8,6 +8,7 @@ import { SchemasGenerator } from './schemas-generator';
 import { ServiceGenerator } from './service-generator';
 import { ErrorsGenerator } from './errors-generator';
 import { SyntaxKind } from 'ts-morph';
+import { PrismaGenerator } from './prisma-generator';
 
 export class ApiGenerator {
   private readonly kebabCaseModel: string;
@@ -78,6 +79,10 @@ export class ApiGenerator {
     const appFile = tsProject.getSourceFileOrThrow(appPath);
     await this.registerModule(appFile, modulesFolderPath);
     await appFile.save();
+
+    // Generate the prisma model
+    const prismaGenerator = new PrismaGenerator(this.config);
+    await prismaGenerator.generate();
   }
 
   private async registerModule(file: SourceFile, modulesFolderPath: string): Promise<void> {
