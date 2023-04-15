@@ -20,6 +20,7 @@
     "@prisma/client": "^4.12.0",
     "@sinclair/typebox": "^0.26.8",
     "fastify": "^4.15.0",
+    "njwt": "^2.0.0",
     "prisma": "^4.12.0",
     "winston": "^3.8.2"
   },
