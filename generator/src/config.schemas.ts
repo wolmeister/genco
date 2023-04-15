@@ -75,6 +75,7 @@ export const configSchema = z.object({
     appFilePath: z.string().default('src/app.ts'),
     appVariableName: z.string().default('app'),
     prismaFilePath: z.string().default('prisma/schema.prisma'),
+    prismaClientFilePath: z.string().default('src/prisma'),
     prismaErrorUtilsFilePath: z.string().default('src/common/prisma-error'),
     typeboxTypesFilePath: z.string().default('src/common/typebox-types'),
     loggerPath: z.string().default('src/logger'),

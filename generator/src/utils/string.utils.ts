@@ -8,8 +8,12 @@ export function camelCase(value: string, plural = false): string {
   return camelize(plural ? pluralize(value) : value, true);
 }
 
+export function snakeCase(value: string, plural = false): string {
+  return underscore(camelCase(value, plural));
+}
+
 export function kebabCase(value: string, plural = false): string {
-  return underscore(camelCase(value, plural)).replace('_', '-');
+  return snakeCase(value, plural).replace('_', '-');
 }
 
 export function quote(value: string): string {
