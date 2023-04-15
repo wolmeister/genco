@@ -1,7 +1,8 @@
-import { SourceFile, VariableDeclarationKind } from 'ts-morph';
-import { Config } from '../config.schemas';
-import { pascalCase, kebabCase, camelCase, snakeCase, quote } from '../utils/string.utils';
 import path from 'path';
+import { SourceFile, VariableDeclarationKind } from 'ts-morph';
+
+import { Config } from '../config.schemas';
+import { camelCase, kebabCase, pascalCase, quote, snakeCase } from '../utils/string.utils';
 
 export class ErrorsGenerator {
   private readonly pascalCaseModel: string;
@@ -32,13 +33,13 @@ export class ErrorsGenerator {
       declarationKind: VariableDeclarationKind.Const,
       declarations: [
         {
-          name: 'Unexpected' + this.pascalCaseModel + 'Error',
+          name: `Unexpected${this.pascalCaseModel}Error`,
           initializer: writer => {
             writer
               .write('createError(')
-              .quote('UNEXPECTED_' + this.snakeCaseModel.toUpperCase() + '_ERROR')
+              .quote(`UNEXPECTED_${this.snakeCaseModel.toUpperCase()}_ERROR`)
               .write(',')
-              .quote('Unexpected ' + this.pascalCaseModel + ' error')
+              .quote(`Unexpected ${this.pascalCaseModel} error`)
               .write(',')
               .write('500)');
           },
@@ -56,13 +57,13 @@ export class ErrorsGenerator {
         declarationKind: VariableDeclarationKind.Const,
         declarations: [
           {
-            name: this.pascalCaseModel + 'NotFoundError',
+            name: `${this.pascalCaseModel}NotFoundError`,
             initializer: writer => {
               writer
                 .write('createError(')
-                .quote(this.snakeCaseModel.toUpperCase() + '_NOT_FOUND')
+                .quote(`${this.snakeCaseModel.toUpperCase()}_NOT_FOUND`)
                 .write(',')
-                .quote(this.pascalCaseModel + ' not found')
+                .quote(`${this.pascalCaseModel} not found`)
                 .write(',')
                 .write('404)');
             },
@@ -77,18 +78,17 @@ export class ErrorsGenerator {
           declarationKind: VariableDeclarationKind.Const,
           declarations: [
             {
-              name: this.pascalCaseModel + pascalCase(fieldName) + 'NotUniqueError',
+              name: `${this.pascalCaseModel + pascalCase(fieldName)}NotUniqueError`,
               initializer: writer => {
                 writer
                   .write('createError(')
                   .quote(
-                    this.snakeCaseModel.toUpperCase() +
-                      '_' +
-                      snakeCase(fieldName).toUpperCase() +
-                      '_NOT_UNIQUE'
+                    `${this.snakeCaseModel.toUpperCase()}_${snakeCase(
+                      fieldName
+                    ).toUpperCase()}_NOT_UNIQUE`
                   )
                   .write(',')
-                  .quote(this.pascalCaseModel + ' ' + camelCase(fieldName) + ' is not unique')
+                  .quote(`${this.pascalCaseModel} ${camelCase(fieldName)} is not unique`)
                   .write(',')
                   .write('400)');
               },
@@ -100,7 +100,7 @@ export class ErrorsGenerator {
 
     if (operations.findById) {
       file.addFunction({
-        name: 'formatFind' + this.pascalCaseModel + 'Error',
+        name: `formatFind${this.pascalCaseModel}Error`,
         parameters: [
           {
             name: 'error',
@@ -125,7 +125,7 @@ export class ErrorsGenerator {
 
     if (operations.create || operations.update) {
       file.addFunction({
-        name: 'formatCreateUpdate' + this.pascalCaseModel + 'Error',
+        name: `formatCreateUpdate${this.pascalCaseModel}Error`,
         parameters: [
           {
             name: 'error',
@@ -136,7 +136,7 @@ export class ErrorsGenerator {
         isExported: true,
         statements: writer => {
           writer.write(`if (isPrismaError(error))`).block(() => {
-            writer.writeLine('// No ' + this.pascalCaseModel + ' found');
+            writer.writeLine(`// No ${this.pascalCaseModel} found`);
             writer.write(`if (error.code === 'P2025')`).block(() => {
               writer.write(`return new ${this.pascalCaseModel}NotFoundError();`);
             });
@@ -168,7 +168,7 @@ export class ErrorsGenerator {
 
     if (operations.delete) {
       file.addFunction({
-        name: 'formatDelete' + this.pascalCaseModel + 'Error',
+        name: `formatDelete${this.pascalCaseModel}Error`,
         parameters: [
           {
             name: 'error',
@@ -179,7 +179,7 @@ export class ErrorsGenerator {
         isExported: true,
         statements: writer => {
           writer.write(`if (isPrismaError(error))`).block(() => {
-            writer.writeLine('// No ' + this.pascalCaseModel + ' found');
+            writer.writeLine(`// No ${this.pascalCaseModel} found`);
             writer.write(`if (error.code === 'P2025')`).block(() => {
               writer.write(`return new ${this.pascalCaseModel}NotFoundError();`);
             });

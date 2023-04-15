@@ -1,8 +1,9 @@
-import { SourceFile, VariableDeclarationKind } from 'ts-morph';
 import path from 'path';
+import { SourceFile, VariableDeclarationKind } from 'ts-morph';
+
 import { Config, Field } from '../config.schemas';
-import { WritableObject, objectToString, writeObject } from '../utils/writer.utils';
 import { kebabCase, pascalCase, quote } from '../utils/string.utils';
+import { objectToString, WritableObject, writeObject } from '../utils/writer.utils';
 
 export class SchemasGenerator {
   private readonly pascalCaseModel: string;
@@ -42,7 +43,7 @@ export class SchemasGenerator {
       trailingTrivia: '\n\n',
       declarations: [
         {
-          name: this.pascalCaseModel + 'ResponseSchema',
+          name: `${this.pascalCaseModel}ResponseSchema`,
           initializer: writer => {
             writer.write('Type.Object(');
             const objectToWrite: WritableObject = {
@@ -64,7 +65,7 @@ export class SchemasGenerator {
     file
       .addTypeAlias({
         isExported: true,
-        name: this.pascalCaseModel + 'Response',
+        name: `${this.pascalCaseModel}Response`,
         type: `Static<typeof ${this.pascalCaseModel}ResponseSchema>`,
       })
       .prependWhitespace(writer => writer.newLine());
@@ -76,7 +77,7 @@ export class SchemasGenerator {
         declarationKind: VariableDeclarationKind.Const,
         declarations: [
           {
-            name: this.pascalCaseModel + 'IdParamsSchema',
+            name: `${this.pascalCaseModel}IdParamsSchema`,
             initializer: writer => {
               writer.write('Type.Object(');
               writeObject(writer, {
@@ -90,7 +91,7 @@ export class SchemasGenerator {
       file
         .addTypeAlias({
           isExported: true,
-          name: this.pascalCaseModel + 'IdParams',
+          name: `${this.pascalCaseModel}IdParams`,
           type: `Static<typeof ${this.pascalCaseModel}IdParamsSchema>`,
         })
         .prependWhitespace(writer => writer.newLine());
@@ -101,11 +102,11 @@ export class SchemasGenerator {
     file.addVariableStatement({
       isExported: true,
       declarationKind: VariableDeclarationKind.Const,
-      leadingTrivia: '// Find ' + this.pascalCaseModel + 's',
+      leadingTrivia: `// Find ${this.pascalCaseModel}s`,
       trailingTrivia: '\n\n',
       declarations: [
         {
-          name: 'Find' + this.pascalCaseModel + 'sQuerySchema',
+          name: `Find${this.pascalCaseModel}sQuerySchema`,
           initializer: writer => {
             writer.write('Type.Object(');
             writeObject(writer, {
@@ -121,7 +122,7 @@ export class SchemasGenerator {
     file
       .addTypeAlias({
         isExported: true,
-        name: 'Find' + this.pascalCaseModel + 'sQuery',
+        name: `Find${this.pascalCaseModel}sQuery`,
         type: `Static<typeof Find${this.pascalCaseModel}sQuerySchema>`,
       })
       .prependWhitespace(writer => writer.newLine());
@@ -132,7 +133,7 @@ export class SchemasGenerator {
       trailingTrivia: '\n\n',
       declarations: [
         {
-          name: 'Find' + this.pascalCaseModel + 'sResponseSchema',
+          name: `Find${this.pascalCaseModel}sResponseSchema`,
           initializer: `createPaginationSchema(${this.pascalCaseModel}ResponseSchema)`,
         },
       ],
@@ -140,7 +141,7 @@ export class SchemasGenerator {
     file
       .addTypeAlias({
         isExported: true,
-        name: 'Find' + this.pascalCaseModel + 'sResponse',
+        name: `Find${this.pascalCaseModel}sResponse`,
         type: `Static<typeof Find${this.pascalCaseModel}sResponseSchema>`,
       })
       .prependWhitespace(writer => writer.newLine());
@@ -150,11 +151,11 @@ export class SchemasGenerator {
     file.addVariableStatement({
       isExported: true,
       declarationKind: VariableDeclarationKind.Const,
-      leadingTrivia: '// Create ' + this.pascalCaseModel,
+      leadingTrivia: `// Create ${this.pascalCaseModel}`,
       trailingTrivia: '\n\n',
       declarations: [
         {
-          name: 'Create' + this.pascalCaseModel + 'Schema',
+          name: `Create${this.pascalCaseModel}Schema`,
           initializer: writer => {
             writer.write('Type.Object(');
             const objectToWrite: WritableObject = {};
@@ -170,7 +171,7 @@ export class SchemasGenerator {
     file
       .addTypeAlias({
         isExported: true,
-        name: 'Create' + this.pascalCaseModel + '',
+        name: `Create${this.pascalCaseModel}`,
         type: `Static<typeof Create${this.pascalCaseModel}Schema>`,
       })
       .prependWhitespace(writer => writer.newLine());
@@ -180,10 +181,10 @@ export class SchemasGenerator {
     file.addVariableStatement({
       isExported: true,
       declarationKind: VariableDeclarationKind.Const,
-      leadingTrivia: '// Update ' + this.pascalCaseModel,
+      leadingTrivia: `// Update ${this.pascalCaseModel}`,
       declarations: [
         {
-          name: 'Update' + this.pascalCaseModel + 'Schema',
+          name: `Update${this.pascalCaseModel}Schema`,
           initializer: writer => {
             writer.write('Type.Object(');
             const objectToWrite: WritableObject = {};
@@ -201,7 +202,7 @@ export class SchemasGenerator {
     file
       .addTypeAlias({
         isExported: true,
-        name: 'Update' + this.pascalCaseModel + '',
+        name: `Update${this.pascalCaseModel}`,
         type: `Static<typeof Update${this.pascalCaseModel}Schema>`,
       })
       .prependWhitespace(writer => writer.newLine());
@@ -229,7 +230,7 @@ export class SchemasGenerator {
         break;
       case 'int':
       case 'double':
-        schema = 'Type.' + (field.type === 'int' ? 'Integer' : 'Number');
+        schema = `Type.${field.type === 'int' ? 'Integer' : 'Number'}`;
         if (field.validations) {
           options.validations = {};
           if (field.validations.min !== undefined) {
@@ -253,7 +254,7 @@ export class SchemasGenerator {
 
     if (field.default !== undefined) {
       if (field.type === 'string' || field.type === 'date') {
-        field.default = quote(field.default);
+        options.default = quote(field.default);
       } else {
         options.default = String(field.default);
       }

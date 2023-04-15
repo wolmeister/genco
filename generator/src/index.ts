@@ -1,10 +1,11 @@
-import { existsSync } from 'fs';
-import path from 'path';
 import { program } from 'commander';
-
-import { configSchema } from './config.schemas';
+import { existsSync } from 'fs';
 import { readFile } from 'fs/promises';
+import path from 'path';
+
 import { ApiGenerator } from './api/api-generator';
+import { configSchema } from './config.schemas';
+import { logger } from './logger';
 
 async function run() {
   // Parse the app params
@@ -14,6 +15,7 @@ async function run() {
     .parse();
 
   const { configPath } = program.opts() as { configPath: string };
+  logger.info(`Running generator with config ${configPath}`);
 
   // Validate and load the app params
   const realConfigPath = path.isAbsolute(configPath)
@@ -21,7 +23,7 @@ async function run() {
     : path.join(process.cwd(), configPath);
 
   if (existsSync(realConfigPath) === false) {
-    console.error(`Config file ${realConfigPath} does not exists`);
+    logger.error(`Config file ${realConfigPath} does not exists`);
     return;
   }
 
@@ -30,7 +32,7 @@ async function run() {
   const parsedConfig = configSchema.safeParse(rawConfig);
   if (parsedConfig.success === false) {
     // TODO - Format error
-    console.error('Invalid config', parsedConfig.error);
+    logger.error('Invalid config', parsedConfig.error);
     return;
   }
 
@@ -38,7 +40,7 @@ async function run() {
   const apiGenerator = new ApiGenerator(parsedConfig.data);
   await apiGenerator.generate();
 
-  console.log('Done');
+  logger.info('Done');
 }
 
 run();

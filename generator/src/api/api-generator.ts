@@ -1,16 +1,15 @@
-import path from 'path';
-import { Config } from '../config.schemas';
 import { rm } from 'fs/promises';
-import { Project, SourceFile, VariableDeclarationKind } from 'ts-morph';
-import { RoutesGenerator } from './routes-generator';
+import path from 'path';
+import { Project, SourceFile, SyntaxKind, VariableDeclarationKind } from 'ts-morph';
+
+import { Config } from '../config.schemas';
 import { camelCase, kebabCase, pascalCase, quote } from '../utils/string.utils';
+import { objectToString } from '../utils/writer.utils';
+import { ErrorsGenerator } from './errors-generator';
+import { PrismaGenerator } from './prisma-generator';
+import { RoutesGenerator } from './routes-generator';
 import { SchemasGenerator } from './schemas-generator';
 import { ServiceGenerator } from './service-generator';
-import { ErrorsGenerator } from './errors-generator';
-import { SyntaxKind } from 'ts-morph';
-import { PrismaGenerator } from './prisma-generator';
-import { writeObject } from '../utils/writer.utils';
-import { objectToString } from '../utils/writer.utils';
 
 export class ApiGenerator {
   private readonly kebabCaseModel: string;
@@ -89,8 +88,10 @@ export class ApiGenerator {
 
   private async registerModule(file: SourceFile, modulesFolderPath: string): Promise<void> {
     // Add routes and service imports
-    const moduleRelativePath =
-      './' + path.relative(path.dirname(file.getFilePath()), modulesFolderPath);
+    const moduleRelativePath = `./${path.relative(
+      path.dirname(file.getFilePath()),
+      modulesFolderPath
+    )}`;
     const getRoutesFunctionName = `get${this.pascalCaseModel}Routes`;
     const serviceNamedImport = `Prisma${this.pascalCaseModel}Service`;
 
@@ -112,14 +113,14 @@ export class ApiGenerator {
     }
 
     // Add the service initialization
-    const serviceVariable = file.getVariableStatement(this.camelCaseModel + 'Service');
+    const serviceVariable = file.getVariableStatement(`${this.camelCaseModel}Service`);
     if (!serviceVariable) {
       const appVariable = file.getVariableStatementOrThrow(this.config.api.appVariableName);
       file.insertVariableStatement(appVariable.getChildIndex(), {
         declarationKind: VariableDeclarationKind.Const,
         declarations: [
           {
-            name: this.camelCaseModel + 'Service',
+            name: `${this.camelCaseModel}Service`,
             initializer: `new Prisma${this.pascalCaseModel}Service()`,
           },
         ],

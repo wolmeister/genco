@@ -1,4 +1,5 @@
-import { CodeBlockWriter, SourceFile, VariableDeclarationKind } from 'ts-morph';
+import { CodeBlockWriter, SourceFile } from 'ts-morph';
+
 import { Config } from '../config.schemas';
 import { camelCase, kebabCase, pascalCase } from '../utils/string.utils';
 import { writeObject } from '../utils/writer.utils';
@@ -68,10 +69,7 @@ export class RoutesGenerator {
       Querystring: `Find${this.pluralPascalCaseModel}Query`,
       Reply: `Find${this.pluralPascalCaseModel}Response`,
     });
-    writer
-      .write('>(')
-      .quote('/' + this.pluralKebabCaseModel)
-      .write(',');
+    writer.write('>(').quote(`/${this.pluralKebabCaseModel}`).write(',');
     writeObject(writer, {
       schema: {
         tags: `['${this.pluralPascalCaseModel}']`,
@@ -89,7 +87,7 @@ export class RoutesGenerator {
           .write('const ')
           .write(this.pluralCamelCaseModel)
           .write(' = await ')
-          .write(this.camelCaseModel + 'Service')
+          .write(`${this.camelCaseModel}Service`)
           .write('.find')
           .write(this.pluralPascalCaseModel)
           .write('(request.query);')
@@ -106,10 +104,7 @@ export class RoutesGenerator {
       Params: `${this.pascalCaseModel}IdParams`,
       Reply: `${this.pascalCaseModel}Response`,
     });
-    writer
-      .write('>(')
-      .quote('/' + this.pluralKebabCaseModel + ':/id')
-      .write(',');
+    writer.write('>(').quote(`/${this.pluralKebabCaseModel}:/id`).write(',');
     writeObject(writer, {
       schema: {
         tags: `['${this.pluralPascalCaseModel}']`,
@@ -127,7 +122,7 @@ export class RoutesGenerator {
           .write('const ')
           .write(this.camelCaseModel)
           .write(' = await ')
-          .write(this.camelCaseModel + 'Service')
+          .write(`${this.camelCaseModel}Service`)
           .write('.find')
           .write(this.pascalCaseModel)
           .write('ById(request.params.id);')
@@ -144,10 +139,7 @@ export class RoutesGenerator {
       Body: `Create${this.pascalCaseModel}`,
       Reply: `${this.pascalCaseModel}Response`,
     });
-    writer
-      .write('>(')
-      .quote('/' + this.pluralKebabCaseModel)
-      .write(',');
+    writer.write('>(').quote(`/${this.pluralKebabCaseModel}`).write(',');
     writeObject(writer, {
       schema: {
         tags: `['${this.pluralPascalCaseModel}']`,
@@ -165,7 +157,7 @@ export class RoutesGenerator {
           .write('const ')
           .write(this.camelCaseModel)
           .write(' = await ')
-          .write(this.camelCaseModel + 'Service')
+          .write(`${this.camelCaseModel}Service`)
           .write('.create')
           .write(this.pascalCaseModel)
           .write('(request.body);')
@@ -183,10 +175,7 @@ export class RoutesGenerator {
       Params: `${this.pascalCaseModel}IdParams`,
       Reply: `${this.pascalCaseModel}Response`,
     });
-    writer
-      .write('>(')
-      .quote('/' + this.pluralKebabCaseModel + '/:id')
-      .write(',');
+    writer.write('>(').quote(`/${this.pluralKebabCaseModel}/:id`).write(',');
     writeObject(writer, {
       schema: {
         tags: `['${this.pluralPascalCaseModel}']`,
@@ -205,7 +194,7 @@ export class RoutesGenerator {
           .write('const ')
           .write(this.camelCaseModel)
           .write(' = await ')
-          .write(this.camelCaseModel + 'Service')
+          .write(`${this.camelCaseModel}Service`)
           .write('.update')
           .write(this.pascalCaseModel)
           .write('(request.params.id, request.body);')
@@ -222,10 +211,7 @@ export class RoutesGenerator {
       Params: `${this.pascalCaseModel}IdParams`,
       Reply: `${this.pascalCaseModel}Response`,
     });
-    writer
-      .write('>(')
-      .quote('/' + this.pluralKebabCaseModel + '/:id')
-      .write(',');
+    writer.write('>(').quote(`/${this.pluralKebabCaseModel}/:id`).write(',');
     writeObject(writer, {
       schema: {
         tags: `['${this.pluralPascalCaseModel}']`,
@@ -243,7 +229,7 @@ export class RoutesGenerator {
           .write('const ')
           .write(this.camelCaseModel)
           .write(' = await ')
-          .write(this.camelCaseModel + 'Service')
+          .write(`${this.camelCaseModel}Service`)
           .write('.delete')
           .write(this.pascalCaseModel)
           .write('(request.params.id);')

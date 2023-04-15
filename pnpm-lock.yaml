@@ -69,6 +69,9 @@ importers:
       ts-morph:
         specifier: ^18.0.0
         version: 18.0.0
+      winston:
+        specifier: ^3.8.2
+        version: 3.8.2
       zod:
         specifier: ^3.21.4
         version: 3.21.4

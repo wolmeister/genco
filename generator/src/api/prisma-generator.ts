@@ -1,7 +1,8 @@
+import { readFile, writeFile } from 'fs/promises';
 import path from 'path';
+
 import { Config, Field } from '../config.schemas';
 import { pascalCase } from '../utils/string.utils';
-import { readFile, writeFile } from 'fs/promises';
 
 type PrismaFieldType = 'String' | 'Int' | 'Decimal' | 'Boolean' | 'DateTime';
 
@@ -119,6 +120,6 @@ export class PrismaGenerator {
     if (prismaField.decorator) {
       type = type.padEnd(this.largestFieldType + 1, ' ');
     }
-    return '  ' + name + type + (prismaField.decorator ?? '');
+    return `  ${name}${type}${prismaField.decorator ?? ''}`;
   }
 }

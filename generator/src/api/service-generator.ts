@@ -1,7 +1,8 @@
-import { SourceFile } from 'ts-morph';
-import { Config } from '../config.schemas';
-import { pascalCase, kebabCase, camelCase } from '../utils/string.utils';
 import path from 'path';
+import { SourceFile } from 'ts-morph';
+
+import { Config } from '../config.schemas';
+import { camelCase, kebabCase, pascalCase } from '../utils/string.utils';
 
 export class ServiceGenerator {
   private readonly pascalCaseModel: string;
@@ -23,12 +24,12 @@ export class ServiceGenerator {
 
   private addService(file: SourceFile): void {
     const serviceInterface = file.addInterface({
-      name: this.pascalCaseModel + 'Service',
+      name: `${this.pascalCaseModel}Service`,
       isExported: true,
     });
 
     const serviceClass = file.addClass({
-      name: 'Prisma' + serviceInterface.getName(),
+      name: `Prisma${serviceInterface.getName()}`,
       implements: [serviceInterface.getName()],
       isExported: true,
     });
@@ -37,7 +38,7 @@ export class ServiceGenerator {
 
     if (operations.findMultiple) {
       serviceInterface.addMethod({
-        name: 'find' + this.pluralPascalCaseModel,
+        name: `find${this.pluralPascalCaseModel}`,
         parameters: [
           {
             name: 'query',
@@ -48,7 +49,7 @@ export class ServiceGenerator {
       });
 
       serviceClass.addMethod({
-        name: 'find' + this.pluralPascalCaseModel,
+        name: `find${this.pluralPascalCaseModel}`,
         parameters: [
           {
             name: 'query',
@@ -73,7 +74,7 @@ export class ServiceGenerator {
 
     if (operations.findById) {
       serviceInterface.addMethod({
-        name: 'find' + this.pascalCaseModel + 'ById',
+        name: `find${this.pascalCaseModel}ById`,
         parameters: [
           {
             name: 'id',
@@ -84,7 +85,7 @@ export class ServiceGenerator {
       });
 
       serviceClass.addMethod({
-        name: 'find' + this.pascalCaseModel + 'ById',
+        name: `find${this.pascalCaseModel}ById`,
         parameters: [
           {
             name: 'id',
@@ -121,7 +122,7 @@ export class ServiceGenerator {
 
     if (operations.create) {
       serviceInterface.addMethod({
-        name: 'create' + this.pascalCaseModel,
+        name: `create${this.pascalCaseModel}`,
         parameters: [
           {
             name: 'data',
@@ -132,7 +133,7 @@ export class ServiceGenerator {
       });
 
       serviceClass.addMethod({
-        name: 'create' + this.pascalCaseModel,
+        name: `create${this.pascalCaseModel}`,
         parameters: [
           {
             name: 'data',
@@ -172,7 +173,7 @@ export class ServiceGenerator {
 
     if (operations.update) {
       serviceInterface.addMethod({
-        name: 'update' + this.pascalCaseModel,
+        name: `update${this.pascalCaseModel}`,
         parameters: [
           {
             name: 'id',
@@ -187,7 +188,7 @@ export class ServiceGenerator {
       });
 
       serviceClass.addMethod({
-        name: 'update' + this.pascalCaseModel,
+        name: `update${this.pascalCaseModel}`,
         parameters: [
           {
             name: 'id',
@@ -232,7 +233,7 @@ export class ServiceGenerator {
 
     if (operations.delete) {
       serviceInterface.addMethod({
-        name: 'delete' + this.pascalCaseModel,
+        name: `delete${this.pascalCaseModel}`,
         parameters: [
           {
             name: 'id',
@@ -243,7 +244,7 @@ export class ServiceGenerator {
       });
 
       serviceClass.addMethod({
-        name: 'delete' + this.pascalCaseModel,
+        name: `delete${this.pascalCaseModel}`,
         parameters: [
           {
             name: 'id',
@@ -300,10 +301,10 @@ export class ServiceGenerator {
     });
 
     const errorsImportDeclaration = file.addImportDeclaration({
-      moduleSpecifier: './' + this.kebabCaseModel + '.errors',
+      moduleSpecifier: `./${this.kebabCaseModel}.errors`,
     });
     const schemasImportDeclaration = file.addImportDeclaration({
-      moduleSpecifier: './' + this.kebabCaseModel + '.schemas',
+      moduleSpecifier: `./${this.kebabCaseModel}.schemas`,
     });
 
     const { operations } = this.config;
