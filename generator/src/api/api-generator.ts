@@ -3,12 +3,14 @@ import { Config } from '../config.schemas';
 import { rm } from 'fs/promises';
 import { Project, SourceFile, VariableDeclarationKind } from 'ts-morph';
 import { RoutesGenerator } from './routes-generator';
-import { camelCase, kebabCase, pascalCase } from '../utils/string.utils';
+import { camelCase, kebabCase, pascalCase, quote } from '../utils/string.utils';
 import { SchemasGenerator } from './schemas-generator';
 import { ServiceGenerator } from './service-generator';
 import { ErrorsGenerator } from './errors-generator';
 import { SyntaxKind } from 'ts-morph';
 import { PrismaGenerator } from './prisma-generator';
+import { writeObject } from '../utils/writer.utils';
+import { objectToString } from '../utils/writer.utils';
 
 export class ApiGenerator {
   private readonly kebabCaseModel: string;
@@ -122,6 +124,48 @@ export class ApiGenerator {
           },
         ],
       });
+    }
+
+    // Register swagger tag
+    const openapiPropertyAssignment = file
+      .getDescendantsOfKind(SyntaxKind.PropertyAssignment)
+      .find(pa => pa.getName() === 'openapi');
+    if (!openapiPropertyAssignment) {
+      throw new Error('Missing openapi configuration object');
+    }
+
+    const tagsPropertyAssignment = openapiPropertyAssignment
+      .getDescendantsOfKind(SyntaxKind.PropertyAssignment)
+      .find(pa => pa.getName() === 'tags');
+    if (!tagsPropertyAssignment) {
+      throw new Error('Missing openapi tags configuration array');
+    }
+    const tagsArray = tagsPropertyAssignment.getInitializerIfKindOrThrow(
+      SyntaxKind.ArrayLiteralExpression
+    );
+    const existingTag = tagsArray
+      .getElements()
+      .map(e => e.asKindOrThrow(SyntaxKind.ObjectLiteralExpression))
+      .find(tagObjectExpression => {
+        const tagPropertyAssignment = tagObjectExpression
+          .getDescendantsOfKind(SyntaxKind.PropertyAssignment)
+          .find(pa => pa.getName() === 'name');
+        if (tagPropertyAssignment) {
+          const tagValueLiteral = tagPropertyAssignment.getInitializerIfKindOrThrow(
+            SyntaxKind.StringLiteral
+          );
+          return tagValueLiteral.getLiteralValue() === this.pascalCaseModel;
+        }
+        return false;
+      });
+
+    if (!existingTag) {
+      tagsArray.addElement(
+        objectToString({
+          name: quote(this.pascalCaseModel),
+          description: quote(`${this.pascalCaseModel} related end-points`),
+        })
+      );
     }
 
     // Register route
