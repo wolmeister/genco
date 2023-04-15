@@ -41,7 +41,7 @@ async function run() {
   const apiGenerator = new ApiGenerator(parsedConfig.data);
   await apiGenerator.generate();
 
-  logger.info('Done');
+  logger.info('Done!');
 }
 
 run();
