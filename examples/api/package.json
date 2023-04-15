@@ -9,7 +9,8 @@
     "dev": "ts-node-dev --no-notify --respawn --clear -r dotenv/config src/index.ts",
     "build": "rimraf dist && tsc",
     "generate": "prisma generate",
-    "prisma": "prisma"
+    "prisma": "prisma",
+    "lint": "eslint --ext .ts src --fix"
   },
   "dependencies": {
     "@devoxa/prisma-relay-cursor-connection": "^2.2.2",

@@ -93,10 +93,7 @@ export const gameRoutes: FastifyPluginAsync = async server => {
       },
     },
     async (request, reply) => {
-      const game = await GameService.updateGame(
-        request.params.id,
-        request.body
-      );
+      const game = await GameService.updateGame(request.params.id, request.body);
       return reply.status(200).send(game);
     }
   );

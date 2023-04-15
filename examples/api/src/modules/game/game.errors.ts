@@ -1,19 +1,11 @@
 import createError, { FastifyError } from '@fastify/error';
-import { isPrismaError } from '../../common/prisma-error';
 
+import { isPrismaError } from '../../common/prisma-error';
 import { logger } from '../../logger';
 
-const UnexpectedGameError = createError(
-  'UNEXPECTED_GAME_ERROR',
-  'Unexpected game error',
-  500
-);
+const UnexpectedGameError = createError('UNEXPECTED_GAME_ERROR', 'Unexpected game error', 500);
 const GameNotFoundError = createError('GAME_NOT_FOUND', 'Game not found', 404);
-const GameNameNotUniqueError = createError(
-  'GAME_NAME_NOT_UNIQUE',
-  'Game name is not unique',
-  400
-);
+const GameNameNotUniqueError = createError('GAME_NAME_NOT_UNIQUE', 'Game name is not unique', 400);
 
 export function formatFindGameError(error: unknown): FastifyError {
   if (error instanceof Error) {

@@ -1,6 +1,6 @@
-import fastify from 'fastify';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
+import fastify from 'fastify';
 
 import { gameRoutes } from './modules/game';
 

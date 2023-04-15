@@ -1,8 +1,4 @@
-import {
-  Connection,
-  Edge,
-  findManyCursorConnection,
-} from '@devoxa/prisma-relay-cursor-connection';
+import { Connection, Edge, findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
 import { Game } from '@prisma/client';
 
 import { prisma } from '../../prisma';
@@ -26,8 +22,7 @@ class GameServiceImpl implements GameService {
 
   findGames(query: FindGamesQuery): Promise<Connection<Game, Edge<Game>>> {
     return findManyCursorConnection(
-      args =>
-        prisma.game.findMany({ ...args, where: { id: { in: query.ids } } }),
+      args => prisma.game.findMany({ ...args, where: { id: { in: query.ids } } }),
       () => prisma.game.count({ where: { id: { in: query.ids } } }),
       query
     );
