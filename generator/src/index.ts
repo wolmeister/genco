@@ -1,6 +1,7 @@
 import { program } from 'commander';
 import { existsSync } from 'fs';
 import { readFile } from 'fs/promises';
+import { parse as parseJson } from 'jsonc-parser';
 import path from 'path';
 
 import { ApiGenerator } from './api/api-generator';
@@ -27,8 +28,8 @@ async function run() {
     return;
   }
 
-  const rawConfigBuffer = await readFile(realConfigPath, 'utf-8');
-  const rawConfig = JSON.parse(rawConfigBuffer.toString());
+  const rawConfigText = await readFile(realConfigPath, 'utf-8');
+  const rawConfig = parseJson(rawConfigText);
   const parsedConfig = configSchema.safeParse(rawConfig);
   if (parsedConfig.success === false) {
     // TODO - Format error

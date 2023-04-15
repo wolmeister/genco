@@ -3,6 +3,7 @@ import path from 'path';
 import { Project, SourceFile, SyntaxKind, VariableDeclarationKind } from 'ts-morph';
 
 import { Config } from '../config.schemas';
+import { Linter } from '../linter';
 import { camelCase, kebabCase, pascalCase, quote } from '../utils/string.utils';
 import { objectToString } from '../utils/writer.utils';
 import { ErrorsGenerator } from './errors-generator';
@@ -34,6 +35,10 @@ export class ApiGenerator {
       await rm(modulesFolderPath, { force: true, recursive: true });
     }
 
+    // Initialize eslint
+    const linter = new Linter(this.config);
+
+    // Initialize ts project
     const tsProject = new Project({
       tsConfigFilePath: path.join(this.config.api.rootPath, this.config.api.tsconfigFilePath),
     });
@@ -80,6 +85,16 @@ export class ApiGenerator {
     const appFile = tsProject.getSourceFileOrThrow(appPath);
     await this.registerModule(appFile, modulesFolderPath);
     await appFile.save();
+
+    // Lint all files
+    await linter.lintFiles([
+      routesFile.getFilePath(),
+      schemasFile.getFilePath(),
+      serviceFile.getFilePath(),
+      errorsFile.getFilePath(),
+      indexFile.getFilePath(),
+      appFile.getFilePath(),
+    ]);
 
     // Generate the prisma model
     const prismaGenerator = new PrismaGenerator(this.config);

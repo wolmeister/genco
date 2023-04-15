@@ -14,12 +14,14 @@
     "commander": "^10.0.0",
     "eslint": "^8.38.0",
     "inflection": "^2.0.1",
+    "jsonc-parser": "^3.2.0",
     "ts-morph": "^18.0.0",
     "winston": "^3.8.2",
     "zod": "^3.21.4"
   },
   "devDependencies": {
     "@tsconfig/node18": "^1.0.1",
+    "@types/eslint": "^8.37.0",
     "@types/node": "^18.15.11",
     "@typescript-eslint/eslint-plugin": "^5.58.0",
     "@typescript-eslint/parser": "^5.58.0",

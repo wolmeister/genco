@@ -66,6 +66,9 @@ importers:
       inflection:
         specifier: ^2.0.1
         version: 2.0.1
+      jsonc-parser:
+        specifier: ^3.2.0
+        version: 3.2.0
       ts-morph:
         specifier: ^18.0.0
         version: 18.0.0
@@ -79,6 +82,9 @@ importers:
       '@tsconfig/node18':
         specifier: ^1.0.1
         version: 1.0.1
+      '@types/eslint':
+        specifier: ^8.37.0
+        version: 8.37.0
       '@types/node':
         specifier: ^18.15.11
         version: 18.15.11
@@ -376,6 +382,17 @@ packages:
 
   /@tsconfig/node18@1.0.1:
     resolution: {integrity: sha512-sNFeK6X2ATlhlvzyH4kKYQlfHXE2f2/wxtB9ClvYXevWpmwkUT7VaSrjIN9E76Qebz8qP5JOJJ9jD3QoD/Z9TA==}
+    dev: true
+
+  /@types/eslint@8.37.0:
+    resolution: {integrity: sha512-Piet7dG2JBuDIfohBngQ3rCt7MgO9xCO4xIMKxBThCq5PNRB91IjlJ10eJVwfoNtvTErmxLzwBZ7rHZtbOMmFQ==}
+    dependencies:
+      '@types/estree': 1.0.0
+      '@types/json-schema': 7.0.11
+    dev: true
+
+  /@types/estree@1.0.0:
+    resolution: {integrity: sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ==}
     dev: true
 
   /@types/json-schema@7.0.11:
@@ -1837,6 +1854,10 @@ packages:
     dependencies:
       minimist: 1.2.8
     dev: true
+
+  /jsonc-parser@3.2.0:
+    resolution: {integrity: sha512-gfFQZrcTc8CnKXp6Y4/CBT3fTc0OVuDofpre4aEeEpSBPV5X5v4+Vmx+8snU7RLPrNHPKSgLxGo9YuQzz20o+w==}
+    dev: false
 
   /kuler@2.0.0:
     resolution: {integrity: sha512-Xq9nH7KlWZmXAtodXDDRE7vs6DU1gTU8zYDHDiWLSip45Egwq3plLHzPn27NgvzL2r1LMPC1vdqh98sQxtqj4A==}
