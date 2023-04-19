@@ -1,0 +1,25 @@
+{
+  "extends": [
+    "airbnb",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react-hooks/recommended",
+    "prettier",
+    "../../.eslintrc"
+  ],
+  "plugins": [
+    "@typescript-eslint",
+    "import",
+    "simple-import-sort",
+    "react-hooks",
+    "react",
+    "prettier"
+  ],
+  "rules": {
+    // react
+    "react/jsx-filename-extension": ["warn", { "extensions": [".tsx"] }],
+    "react/prop-types": "off",
+    "react/require-default-props": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/no-unescaped-entities": "off"
+  }
+}

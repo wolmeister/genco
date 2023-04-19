@@ -1,3 +1,9 @@
 {
-  "extends": "../../.eslintrc"
+  "extends": [
+    "airbnb-base",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "../../.eslintrc"
+  ],
+  "plugins": ["@typescript-eslint", "import", "simple-import-sort", "prettier"]
 }

@@ -16,19 +16,19 @@
     "@devoxa/prisma-relay-cursor-connection": "^2.2.2",
     "@fastify/error": "^3.2.0",
     "@fastify/swagger": "^8.3.1",
-    "@fastify/swagger-ui": "^1.6.0",
-    "@prisma/client": "^4.12.0",
-    "@sinclair/typebox": "^0.26.8",
+    "@fastify/swagger-ui": "^1.8.0",
+    "@prisma/client": "^4.13.0",
+    "@sinclair/typebox": "^0.27.8",
     "fastify": "^4.15.0",
     "njwt": "^2.0.0",
-    "prisma": "^4.12.0",
+    "prisma": "^4.13.0",
     "winston": "^3.8.2"
   },
   "devDependencies": {
-    "@tsconfig/node18": "^1.0.1",
-    "@types/node": "^18.15.11",
-    "@typescript-eslint/eslint-plugin": "^5.58.0",
-    "@typescript-eslint/parser": "^5.58.0",
+    "@tsconfig/node18": "^2.0.0",
+    "@types/node": "^18.15.12",
+    "@typescript-eslint/eslint-plugin": "^5.59.0",
+    "@typescript-eslint/parser": "^5.59.0",
     "dotenv": "^16.0.3",
     "eslint": "^8.38.0",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -37,8 +37,8 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-simple-import-sort": "^10.0.0",
-    "rimraf": "^4.4.1",
+    "rimraf": "^5.0.0",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.0.3"
+    "typescript": "^5.0.4"
   }
 }
