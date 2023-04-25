@@ -1,14 +1,8 @@
-// import './App.css';
-
-import { Button } from 'antd';
 import React from 'react';
+import { RouterProvider } from 'react-router-dom';
 
-function App() {
-  return (
-    <div className="App">
-      <Button type="primary">Nice</Button>
-    </div>
-  );
+import { router } from './router';
+
+export function App() {
+  return <RouterProvider router={router} />;
 }
-
-export default App;
