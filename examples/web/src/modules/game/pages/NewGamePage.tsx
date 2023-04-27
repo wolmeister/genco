@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { GameForm } from '../components/GameForm';
+
 export function NewGamePage() {
-  return <h1>NewGamePage</h1>;
+  return <GameForm />;
 }
