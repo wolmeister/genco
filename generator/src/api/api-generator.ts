@@ -4,6 +4,7 @@ import { Project, SourceFile, SyntaxKind, VariableDeclarationKind } from 'ts-mor
 
 import { Config } from '../config.schemas';
 import { Linter } from '../linter';
+import { logger } from '../logger';
 import { camelCase, kebabCase, pascalCase, quote } from '../utils/string.utils';
 import { objectToString } from '../utils/writer.utils';
 import { ErrorsGenerator } from './errors-generator';
@@ -24,6 +25,8 @@ export class ApiGenerator {
   }
 
   async generate(): Promise<void> {
+    logger.info('Generating api code...');
+
     const modulesFolderPath = path.join(
       this.config.api.rootPath,
       this.config.api.modulesFolderPath,
@@ -99,6 +102,8 @@ export class ApiGenerator {
     // Generate the prisma model
     const prismaGenerator = new PrismaGenerator(this.config);
     await prismaGenerator.generate();
+
+    logger.info('Finished generating api code!');
   }
 
   private async registerModule(file: SourceFile, modulesFolderPath: string): Promise<void> {
