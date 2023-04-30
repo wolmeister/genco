@@ -36,7 +36,7 @@ export class ApiGenerator {
     }
 
     // Initialize eslint
-    const linter = new Linter(this.config);
+    const linter = new Linter(this.config.api.rootPath);
 
     // Initialize ts project
     const tsProject = new Project({

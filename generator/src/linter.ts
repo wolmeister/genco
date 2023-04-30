@@ -1,10 +1,9 @@
 import { ESLint } from 'eslint';
 
-import { Config } from './config.schemas';
 import { logger } from './logger';
 
 export class Linter {
-  constructor(private config: Config) {}
+  constructor(private rootPath: string) {}
 
   async lintFiles(files: string[]): Promise<void> {
     logger.info(`Initializing eslint`);
@@ -12,7 +11,7 @@ export class Linter {
     const eslint = new ESLint({
       fix: true,
       useEslintrc: true,
-      cwd: this.config.api.rootPath,
+      cwd: this.rootPath,
     });
 
     logger.info('Linting files', files);

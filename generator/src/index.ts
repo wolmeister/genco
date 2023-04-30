@@ -7,6 +7,7 @@ import path from 'path';
 import { ApiGenerator } from './api/api-generator';
 import { configSchema } from './config.schemas';
 import { logger } from './logger';
+import { WebGenerator } from './web/web-generator';
 
 async function run() {
   // Parse the app params
@@ -40,6 +41,9 @@ async function run() {
   // Start the generator
   const apiGenerator = new ApiGenerator(parsedConfig.data);
   await apiGenerator.generate();
+
+  const webGenerator = new WebGenerator(parsedConfig.data);
+  await webGenerator.generate();
 
   logger.info('Done!');
 }

@@ -2,6 +2,9 @@
   "api": {
     "rootPath": "/home/victor/projects/genco/examples/api"
   },
+  "web": {
+    "rootPath": "/home/victor/projects/genco/examples/web"
+  },
   "overwrite": true,
   "model": "UserProfile",
   "permissions": {

@@ -104,6 +104,11 @@ export const configSchema = z.object({
     checkPermissionFilePath: z.string().default('src/modules/auth'),
     loggerFilePath: z.string().default('src/logger'),
   }),
+  web: z.object({
+    rootPath: z.string(),
+    tsconfigFilePath: z.string().default('tsconfig.json'),
+    modulesFolderPath: z.string().default('src/modules'),
+  }),
   overwrite: z.boolean().default(false),
   model: z.string(),
   operations: z
