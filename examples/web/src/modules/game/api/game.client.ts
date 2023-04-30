@@ -9,12 +9,8 @@ export function findGames(filter?: FindGamesFilter): Promise<PaginatedGame> {
     .json<PaginatedGame>();
 }
 
-export function findGame(id: string): Promise<Game | null> {
-  return apiClient
-    .url(`/games/${id}`)
-    .get()
-    .notFound(() => null)
-    .json<Game>();
+export function findGame(id: string): Promise<Game> {
+  return apiClient.url(`/games/${id}`).get().json<Game>();
 }
 
 export function createGame(data: CreateGameData): Promise<Game> {

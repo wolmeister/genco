@@ -21,11 +21,11 @@ export type PaginatedGame = Paginated<Game>;
 // Create Game
 export type CreateGameData = {
   name: string;
-  summary?: string;
+  summary?: string | null;
 };
 
 // Update Game
 export type UpdateGameData = {
   name: string;
-  summary?: string;
+  summary?: string | null;
 };

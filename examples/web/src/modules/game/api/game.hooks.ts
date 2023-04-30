@@ -8,7 +8,7 @@ export function useGames(filter?: FindGamesFilter) {
 }
 
 export function useGame(id: string) {
-  return useQuery<Game | null>(['games', id], () => findGame(id));
+  return useQuery<Game>(['games', id], () => findGame(id), { keepPreviousData: true });
 }
 
 export function useCreateGameMutation() {
