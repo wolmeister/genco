@@ -6,6 +6,9 @@ import { Config } from '../config.schemas';
 import { Linter } from '../linter';
 import { logger } from '../logger';
 import { camelCase, kebabCase, pascalCase } from '../utils/string.utils';
+import { ApiClientGenerator } from './api-client-generator';
+import { ApiHooksGenerator } from './api-hooks-generator';
+import { ApiTypesGenerator } from './api-types-generator';
 
 export class WebGenerator {
   private readonly kebabCaseModel: string;
@@ -40,8 +43,36 @@ export class WebGenerator {
       tsConfigFilePath: path.join(this.config.web.rootPath, this.config.web.tsconfigFilePath),
     });
 
+    // Generate api types
+    const apiTypesFile = tsProject.createSourceFile(
+      path.join(modulesFolderPath, 'api', `${this.kebabCaseModel}.types.ts`)
+    );
+    const apiTypesGenerator = new ApiTypesGenerator(this.config);
+    await apiTypesGenerator.generate(apiTypesFile);
+    await apiTypesFile.save();
+
+    // Generate api client
+    const apiClientFile = tsProject.createSourceFile(
+      path.join(modulesFolderPath, 'api', `${this.kebabCaseModel}.client.ts`)
+    );
+    const apiClientGenerator = new ApiClientGenerator(this.config);
+    await apiClientGenerator.generate(apiClientFile);
+    await apiClientFile.save();
+
+    // Generate api hooks
+    const apiHooksFile = tsProject.createSourceFile(
+      path.join(modulesFolderPath, 'api', `${this.kebabCaseModel}.hooks.ts`)
+    );
+    const apiHooksGenerator = new ApiHooksGenerator(this.config);
+    await apiHooksGenerator.generate(apiHooksFile);
+    await apiHooksFile.save();
+
     // Lint all files
-    await linter.lintFiles([]);
+    await linter.lintFiles([
+      apiTypesFile.getFilePath(),
+      apiClientFile.getFilePath(),
+      apiHooksFile.getFilePath(),
+    ]);
 
     logger.info('Finished generating web code!');
   }

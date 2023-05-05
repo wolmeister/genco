@@ -108,6 +108,8 @@ export const configSchema = z.object({
     rootPath: z.string(),
     tsconfigFilePath: z.string().default('tsconfig.json'),
     modulesFolderPath: z.string().default('src/modules'),
+    paginatedFilePath: z.string().default('src/modules/common/api/common.types'),
+    apiClientFilePath: z.string().default('src/modules/common/api/api.client'),
   }),
   overwrite: z.boolean().default(false),
   model: z.string(),
