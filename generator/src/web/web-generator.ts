@@ -9,6 +9,9 @@ import { camelCase, kebabCase, pascalCase } from '../utils/string.utils';
 import { ApiClientGenerator } from './api-client-generator';
 import { ApiHooksGenerator } from './api-hooks-generator';
 import { ApiTypesGenerator } from './api-types-generator';
+import { ErrorComponentGenerator } from './error-component-generator';
+import { FormComponentGenerator } from './form-component-generator';
+import { SkeletonComponentGenerator } from './skeleton-component-generator';
 
 export class WebGenerator {
   private readonly kebabCaseModel: string;
@@ -67,11 +70,38 @@ export class WebGenerator {
     await apiHooksGenerator.generate(apiHooksFile);
     await apiHooksFile.save();
 
+    // Generate form component
+    const formComponentFile = tsProject.createSourceFile(
+      path.join(modulesFolderPath, 'components', `${this.pascalCaseModel}Form.tsx`)
+    );
+    const formComponentGenerator = new FormComponentGenerator(this.config);
+    await formComponentGenerator.generate(formComponentFile);
+    await formComponentFile.save();
+
+    // Generate error component
+    const errorComponentFile = tsProject.createSourceFile(
+      path.join(modulesFolderPath, 'components', `${this.pascalCaseModel}Error.tsx`)
+    );
+    const errorComponentGenerator = new ErrorComponentGenerator(this.config);
+    await errorComponentGenerator.generate(errorComponentFile);
+    await errorComponentFile.save();
+
+    // Generate skeleton component
+    const skeletonComponentFile = tsProject.createSourceFile(
+      path.join(modulesFolderPath, 'components', `${this.pascalCaseModel}Skeleton.tsx`)
+    );
+    const skeletonComponentGenerator = new SkeletonComponentGenerator(this.config);
+    await skeletonComponentGenerator.generate(skeletonComponentFile);
+    await skeletonComponentFile.save();
+
     // Lint all files
     await linter.lintFiles([
       apiTypesFile.getFilePath(),
       apiClientFile.getFilePath(),
       apiHooksFile.getFilePath(),
+      formComponentFile.getFilePath(),
+      errorComponentFile.getFilePath(),
+      skeletonComponentFile.getFilePath(),
     ]);
 
     logger.info('Finished generating web code!');

@@ -1,4 +1,4 @@
-import { camelize, pluralize, underscore } from 'inflection';
+import { camelize, humanize as inflHumanize, pluralize, underscore } from 'inflection';
 
 export function pascalCase(value: string, plural = false): string {
   return camelize(plural ? pluralize(value) : value, false);
@@ -18,4 +18,8 @@ export function kebabCase(value: string, plural = false): string {
 
 export function quote(value: string): string {
   return `'${value}'`;
+}
+
+export function humanize(value: string, lowFirstLeter = false): string {
+  return inflHumanize(snakeCase(value), lowFirstLeter);
 }
