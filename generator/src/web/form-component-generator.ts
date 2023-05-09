@@ -86,6 +86,7 @@ export class FormComponentGenerator extends TypescriptGenerator {
       .write('<Form.Item ')
       .write(`label="${humanize(fieldName)}"`)
       .write(`name="${fieldName}"`)
+      .conditionalWrite(field.type === 'boolean', `valuePropName="checked"`)
       .write(field.immutable ? "hidden={mode === 'update'}" : '')
       .write(`rules={${this.getFormInputRules(fieldName, field)}}`)
       .write('>');
@@ -125,6 +126,7 @@ export class FormComponentGenerator extends TypescriptGenerator {
         if (field.format === 'email') {
           rules.push({
             type: 'email',
+            message: 'Please input a valid email!',
           });
         }
         if (field.validations?.minLength) {
@@ -137,7 +139,7 @@ export class FormComponentGenerator extends TypescriptGenerator {
         }
         if (field.validations?.maxLength) {
           rules.push({
-            min: field.validations.maxLength,
+            max: field.validations.maxLength,
             message: `${humanize(fieldName)} must be maximum ${
               field.validations.maxLength
             } characters!`,
@@ -148,24 +150,23 @@ export class FormComponentGenerator extends TypescriptGenerator {
       }
       case 'int':
       case 'double': {
-        if (field.type === 'int') {
-          rules.push({ type: 'integer' });
-        } else {
-          rules.push({ type: 'float' });
+        let validationMessage = `Please input a ${field.type === 'int' ? 'integer' : 'float'}`;
+        if (field.validations?.min !== undefined && field.validations?.max !== undefined) {
+          validationMessage += ` between ${field.validations.min} and ${field.validations.max}`;
+        } else if (field.validations?.min !== undefined) {
+          validationMessage += ` greater than ${field.validations.min}`;
+        } else if (field.validations?.max !== undefined) {
+          validationMessage += ` smaller than ${field.validations.min}`;
         }
+        validationMessage += '!';
 
-        if (field.validations?.min) {
-          rules.push({
-            min: field.validations.min,
-            message: `${humanize(fieldName)} must be at least ${field.validations.min}!`,
-          });
-        }
-        if (field.validations?.max) {
-          rules.push({
-            min: field.validations.max,
-            message: `${humanize(fieldName)} must be at most ${field.validations.max}!`,
-          });
-        }
+        rules.push({
+          type: field.type === 'int' ? 'integer' : 'float',
+          message: validationMessage,
+          min: field.validations?.min,
+          max: field.validations?.max,
+        });
+
         break;
       }
       case 'date':
