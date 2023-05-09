@@ -1,6 +1,6 @@
 import { rm } from 'fs/promises';
 import path from 'path';
-import { Project, SourceFile } from 'ts-morph';
+import { Project, SourceFile, SyntaxKind } from 'ts-morph';
 
 import { BaseGenerator } from '../common/base-generator';
 import { Linter } from '../linter';
@@ -14,6 +14,7 @@ import { CreatePageGenerator } from './pages/create-page-generator';
 import { SearchPageGenerator } from './pages/search-page-generator';
 import { UpdatePageGenerator } from './pages/update-page-generator';
 import { ViewPageGenerator } from './pages/view-page-generator';
+import { RoutesGenerator } from './routes-generator';
 import { SkeletonComponentGenerator } from './skeleton-component-generator';
 
 export class WebGenerator extends BaseGenerator {
@@ -138,9 +139,68 @@ export class WebGenerator extends BaseGenerator {
       filesToLint.push(updatePageFile);
     }
 
+    // Generate routes
+    const routesFile = tsProject.createSourceFile(
+      path.join(modulesFolderPath, `${this.kebabCaseModel}.routes.tsx`)
+    );
+    const routesGenerator = new RoutesGenerator(this.config);
+    await routesGenerator.generate(routesFile);
+    await routesFile.save();
+    filesToLint.push(routesFile);
+
+    // Register routes
+    const routerPath = path.join(this.config.web.rootPath, this.config.web.routerFilePath);
+    const routerFile = tsProject.getSourceFileOrThrow(routerPath);
+    await this.registerRoutes(routerFile, modulesFolderPath);
+    await routerFile.save();
+    filesToLint.push(routerFile);
+
     // Lint all files
     await linter.lintFiles(filesToLint.map(f => f.getFilePath()));
 
     logger.info('Finished generating web code!');
+  }
+
+  private registerRoutes(file: SourceFile, modulesFolderPath: string): void {
+    const routesName = `${this.camelCaseModel}Routes`;
+
+    // Add import
+    const routesRelativePath = `./${path.relative(
+      path.dirname(file.getFilePath()),
+      path.join(modulesFolderPath, `${this.kebabCaseModel}.routes`)
+    )}`;
+    let routesImport = file.getImportDeclaration(
+      id => id.getModuleSpecifierValue() === routesRelativePath
+    );
+    if (!routesImport) {
+      routesImport = file.addImportDeclaration({
+        moduleSpecifier: routesRelativePath,
+      });
+    }
+
+    const routesNamedImports = routesImport.getNamedImports().map(ni => ni.getName());
+    if (!routesNamedImports.includes(routesName)) {
+      routesImport.addNamedImport(routesName);
+    }
+
+    // Add routes to array
+    const routerVariable = file.getVariableStatementOrThrow(this.config.web.routerVariableName);
+    const routesArray = routerVariable.getFirstDescendantByKindOrThrow(
+      SyntaxKind.ArrayLiteralExpression
+    );
+
+    const alreadyAdded = routesArray
+      .getElements()
+      .map(e => e.asKindOrThrow(SyntaxKind.SpreadElement))
+      .find(routesSpreadElement => {
+        const addedRouteName = routesSpreadElement
+          .getFirstDescendantByKindOrThrow(SyntaxKind.Identifier)
+          .getText();
+        return addedRouteName === routesName;
+      });
+
+    if (!alreadyAdded) {
+      routesArray.addElement(`...${routesName}`);
+    }
   }
 }

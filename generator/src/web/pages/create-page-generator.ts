@@ -14,7 +14,7 @@ export class CreatePageGenerator extends TypescriptGenerator {
     const fields = this.config.fields;
 
     file.addFunction({
-      name: `New${this.pascalCaseModel}Page`,
+      name: `Create${this.pascalCaseModel}Page`,
       isExported: true,
       statements: writer => {
         writer.writeLine('const navigate = useNavigate()');
