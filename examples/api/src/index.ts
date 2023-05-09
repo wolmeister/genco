@@ -1,7 +1,7 @@
 import { app } from './app';
 import { logger } from './logger';
 
-app.listen({ port: 8080 }, (err, address) => {
+app.listen({ port: 8080, host: '0.0.0.0' }, (err, address) => {
   if (err) {
     logger.error('Unexpected error while initializing the server', err);
     process.exit(1);

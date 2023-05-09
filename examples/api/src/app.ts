@@ -2,6 +2,7 @@ import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 import fastify from 'fastify';
 
+import { authRoutes } from './modules/auth';
 import { gameRoutes } from './modules/game';
 
 const app = fastify();
@@ -9,7 +10,7 @@ const app = fastify();
 app.register(swagger, {
   openapi: {
     info: {
-      title: 'Bigorna API',
+      title: 'GENCO Example API',
       version: '0.0.1',
     },
     components: {
@@ -27,7 +28,7 @@ app.register(swagger, {
       },
     ],
     tags: [
-      // { name: 'Auth', description: 'Auth related end-points' },
+      { name: 'Auth', description: 'Auth related end-points (testing)' },
       { name: 'Game', description: 'Game related end-points' },
     ],
   },
@@ -38,5 +39,6 @@ app.register(swaggerUi, {
 });
 
 app.register(gameRoutes);
+app.register(authRoutes);
 
 export { app };
