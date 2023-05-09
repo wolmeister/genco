@@ -1,29 +1,22 @@
 import { rm } from 'fs/promises';
 import path from 'path';
-import { Project, SourceFile, SyntaxKind, VariableDeclarationKind } from 'ts-morph';
+import { Project, SourceFile } from 'ts-morph';
 
-import { Config } from '../config.schemas';
+import { BaseGenerator } from '../common/base-generator';
 import { Linter } from '../linter';
 import { logger } from '../logger';
-import { camelCase, kebabCase, pascalCase } from '../utils/string.utils';
 import { ApiClientGenerator } from './api-client-generator';
 import { ApiHooksGenerator } from './api-hooks-generator';
 import { ApiTypesGenerator } from './api-types-generator';
 import { ErrorComponentGenerator } from './error-component-generator';
 import { FormComponentGenerator } from './form-component-generator';
+import { CreatePageGenerator } from './pages/create-page-generator';
+import { SearchPageGenerator } from './pages/search-page-generator';
+import { UpdatePageGenerator } from './pages/update-page-generator';
+import { ViewPageGenerator } from './pages/view-page-generator';
 import { SkeletonComponentGenerator } from './skeleton-component-generator';
 
-export class WebGenerator {
-  private readonly kebabCaseModel: string;
-  private readonly pascalCaseModel: string;
-  private readonly camelCaseModel: string;
-
-  constructor(private config: Config) {
-    this.kebabCaseModel = kebabCase(this.config.model);
-    this.pascalCaseModel = pascalCase(this.config.model);
-    this.camelCaseModel = camelCase(this.config.model);
-  }
-
+export class WebGenerator extends BaseGenerator {
   async generate(): Promise<void> {
     logger.info('Generating web code...');
 
@@ -40,6 +33,7 @@ export class WebGenerator {
 
     // Initialize eslint
     const linter = new Linter(this.config.web.rootPath);
+    const filesToLint: SourceFile[] = [];
 
     // Initialize ts project
     const tsProject = new Project({
@@ -53,6 +47,7 @@ export class WebGenerator {
     const apiTypesGenerator = new ApiTypesGenerator(this.config);
     await apiTypesGenerator.generate(apiTypesFile);
     await apiTypesFile.save();
+    filesToLint.push(apiTypesFile);
 
     // Generate api client
     const apiClientFile = tsProject.createSourceFile(
@@ -61,6 +56,7 @@ export class WebGenerator {
     const apiClientGenerator = new ApiClientGenerator(this.config);
     await apiClientGenerator.generate(apiClientFile);
     await apiClientFile.save();
+    filesToLint.push(apiClientFile);
 
     // Generate api hooks
     const apiHooksFile = tsProject.createSourceFile(
@@ -69,6 +65,7 @@ export class WebGenerator {
     const apiHooksGenerator = new ApiHooksGenerator(this.config);
     await apiHooksGenerator.generate(apiHooksFile);
     await apiHooksFile.save();
+    filesToLint.push(apiHooksFile);
 
     // Generate form component
     const formComponentFile = tsProject.createSourceFile(
@@ -77,6 +74,7 @@ export class WebGenerator {
     const formComponentGenerator = new FormComponentGenerator(this.config);
     await formComponentGenerator.generate(formComponentFile);
     await formComponentFile.save();
+    filesToLint.push(formComponentFile);
 
     // Generate error component
     const errorComponentFile = tsProject.createSourceFile(
@@ -85,6 +83,7 @@ export class WebGenerator {
     const errorComponentGenerator = new ErrorComponentGenerator(this.config);
     await errorComponentGenerator.generate(errorComponentFile);
     await errorComponentFile.save();
+    filesToLint.push(errorComponentFile);
 
     // Generate skeleton component
     const skeletonComponentFile = tsProject.createSourceFile(
@@ -93,16 +92,54 @@ export class WebGenerator {
     const skeletonComponentGenerator = new SkeletonComponentGenerator(this.config);
     await skeletonComponentGenerator.generate(skeletonComponentFile);
     await skeletonComponentFile.save();
+    filesToLint.push(skeletonComponentFile);
+
+    // Generate search page
+    if (this.config.operations.findMultiple) {
+      const searchPageFile = tsProject.createSourceFile(
+        path.join(modulesFolderPath, 'pages', `${this.pluralPascalCaseModel}Page.tsx`)
+      );
+      const searchPageGenerator = new SearchPageGenerator(this.config);
+      await searchPageGenerator.generate(searchPageFile);
+      await searchPageFile.save();
+      filesToLint.push(searchPageFile);
+    }
+
+    // Generate view page
+    if (this.config.operations.findById) {
+      const viewPageFile = tsProject.createSourceFile(
+        path.join(modulesFolderPath, 'pages', `${this.pascalCaseModel}Page.tsx`)
+      );
+      const viewPageGenerator = new ViewPageGenerator(this.config);
+      await viewPageGenerator.generate(viewPageFile);
+      await viewPageFile.save();
+      filesToLint.push(viewPageFile);
+    }
+
+    // Generate create page
+    if (this.config.operations.create) {
+      const createPageFile = tsProject.createSourceFile(
+        path.join(modulesFolderPath, 'pages', `Create${this.pascalCaseModel}Page.tsx`)
+      );
+      const createPageGenerator = new CreatePageGenerator(this.config);
+      await createPageGenerator.generate(createPageFile);
+      await createPageFile.save();
+      filesToLint.push(createPageFile);
+    }
+
+    // Generate update page
+    if (this.config.operations.update) {
+      const updatePageFile = tsProject.createSourceFile(
+        path.join(modulesFolderPath, 'pages', `Update${this.pascalCaseModel}Page.tsx`)
+      );
+      const updatePageGenerator = new UpdatePageGenerator(this.config);
+      await updatePageGenerator.generate(updatePageFile);
+      await updatePageFile.save();
+      filesToLint.push(updatePageFile);
+    }
 
     // Lint all files
-    await linter.lintFiles([
-      apiTypesFile.getFilePath(),
-      apiClientFile.getFilePath(),
-      apiHooksFile.getFilePath(),
-      formComponentFile.getFilePath(),
-      errorComponentFile.getFilePath(),
-      skeletonComponentFile.getFilePath(),
-    ]);
+    await linter.lintFiles(filesToLint.map(f => f.getFilePath()));
 
     logger.info('Finished generating web code!');
   }
