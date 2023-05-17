@@ -29,7 +29,7 @@ export function GameError({ error }: GameErrorProps) {
     <Result
       status="500"
       title="500"
-      subTitle="Sorry, a unnwon error happened."
+      subTitle="Sorry, a unknown error happened."
       extra={
         <Button type="primary" onClick={() => navigate('/games')}>
           Back Home

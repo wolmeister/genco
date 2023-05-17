@@ -61,7 +61,7 @@ export class ErrorComponentGenerator extends TypescriptGenerator {
           .write('<Result ')
           .write('status="500"')
           .write('title="500"')
-          .write('subTitle="Sorry, a unnwon error happened."')
+          .write('subTitle="Sorry, a unknown error happened."')
           .write(
             `extra={<Button type="primary" onClick={() => navigate('/${this.pluralKebabCaseModel}')}>`
           )
