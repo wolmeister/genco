@@ -40,10 +40,9 @@ async function run() {
 
   // Start the generator
   const apiGenerator = new ApiGenerator(parsedConfig.data);
-  await apiGenerator.generate();
-
   const webGenerator = new WebGenerator(parsedConfig.data);
-  await webGenerator.generate();
+
+  await Promise.all([apiGenerator.generate(), webGenerator.generate()]);
 
   logger.info('Done!');
 }

@@ -1,7 +1,8 @@
 import path from 'path';
 import { CodeBlockWriter, SourceFile } from 'ts-morph';
 
-import { Config, Permission } from '../config.schemas';
+import { getPermissionRole } from '../common/roles';
+import { Config, Operation } from '../config.schemas';
 import { camelCase, kebabCase, pascalCase, quote } from '../utils/string.utils';
 import { objectToString, WritableObject, writeObject } from '../utils/writer.utils';
 
@@ -79,10 +80,7 @@ export class RoutesGenerator {
           200: `Find${this.pluralPascalCaseModel}ResponseSchema`,
         },
       },
-      onRequest: `checkPermission(${this.serializePermission(
-        this.config.permissions.findMultiple,
-        'findMultiple'
-      )})`,
+      onRequest: `checkPermission(${this.serializePermission('findMultiple')})`,
     });
     writer
       .write(',')
@@ -118,10 +116,7 @@ export class RoutesGenerator {
           200: `${this.pascalCaseModel}ResponseSchema`,
         },
       },
-      onRequest: `checkPermission(${this.serializePermission(
-        this.config.permissions.findById,
-        'findById'
-      )})`,
+      onRequest: `checkPermission(${this.serializePermission('findById')})`,
     });
     writer
       .write(',')
@@ -157,10 +152,7 @@ export class RoutesGenerator {
           '201': `${this.pascalCaseModel}ResponseSchema`,
         },
       },
-      onRequest: `checkPermission(${this.serializePermission(
-        this.config.permissions.create,
-        'create'
-      )})`,
+      onRequest: `checkPermission(${this.serializePermission('create')})`,
     });
     writer
       .write(',')
@@ -198,10 +190,7 @@ export class RoutesGenerator {
           '200': `${this.pascalCaseModel}ResponseSchema`,
         },
       },
-      onRequest: `checkPermission(${this.serializePermission(
-        this.config.permissions.update,
-        'update'
-      )})`,
+      onRequest: `checkPermission(${this.serializePermission('update')})`,
     });
     writer
       .write(',')
@@ -237,10 +226,7 @@ export class RoutesGenerator {
           '200': `${this.pascalCaseModel}ResponseSchema`,
         },
       },
-      onRequest: `checkPermission(${this.serializePermission(
-        this.config.permissions.delete,
-        'delete'
-      )})`,
+      onRequest: `checkPermission(${this.serializePermission('delete')})`,
     });
     writer
       .write(',')
@@ -328,17 +314,14 @@ export class RoutesGenerator {
     }
   }
 
-  private serializePermission(permission: Permission, operation: string): string {
+  private serializePermission(operation: Operation): string {
+    const permission = this.config.permissions[operation];
     const permissionObject: WritableObject = {
       type: quote(permission.type),
     };
 
     if (permission.type === 'role') {
-      let role = permission.role;
-      if (!role) {
-        role = `${this.kebabCaseModel}:${kebabCase(operation)}`;
-      }
-      permissionObject.role = quote(role);
+      permissionObject.role = quote(getPermissionRole(this.config, permission, operation));
     }
 
     return objectToString(permissionObject);

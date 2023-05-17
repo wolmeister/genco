@@ -124,6 +124,9 @@ export const configSchema = z.object({
     tableComponentFilePath: z.string().default('antd'),
     modalFilePath: z.string().default('antd'),
     messageFilePath: z.string().default('antd'),
+    protectedRouteFilePath: z
+      .string()
+      .default('./src/modules/common/auth/components/ProtectedRoute'),
   }),
   overwrite: z.boolean().default(false),
   model: z.string(),
@@ -149,3 +152,5 @@ export const configSchema = z.object({
 });
 
 export type Config = z.infer<typeof configSchema>;
+
+export type Operation = keyof Config['operations'];
