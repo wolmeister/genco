@@ -12,14 +12,15 @@ export function GamesPage() {
     <Table
       dataSource={gamesQuery.data?.edges.map(e => e.node)}
       loading={gamesQuery.isLoading}
+      rowKey="id"
       onRow={game => ({
         onClick: () => {
           navigate(`/games/${game.id}`);
         },
       })}
     >
-      <Table.Column title="Name" dataIndex="name" key="name" />
-      <Table.Column title="Summary" dataIndex="summary" key="summary" />
+      <Table.Column title="Name" dataIndex="name" key="id" />
+      <Table.Column title="Summary" dataIndex="summary" key="id" />
     </Table>
   );
 }

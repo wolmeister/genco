@@ -26,6 +26,7 @@ export class SearchPageGenerator extends TypescriptGenerator {
           .write('<Table ')
           .write(`dataSource={${this.pluralCamelCaseModel}Query.data?.edges.map(e => e.node)}`)
           .write(`loading={${this.pluralCamelCaseModel}Query.isLoading}`)
+          .write(`rowKey="id"`)
           .write(`onRow=`)
           .block(() => {
             writer
@@ -45,7 +46,7 @@ export class SearchPageGenerator extends TypescriptGenerator {
             .write('<Table.Column ')
             .write(`title="${humanize(fieldName)}"`)
             .write(`dataIndex="${fieldName}"`)
-            .write(`key="${fieldName}"`)
+            .write(`key="id"`)
             .write(`/>`);
         }
 
