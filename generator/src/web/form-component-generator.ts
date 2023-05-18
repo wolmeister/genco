@@ -2,7 +2,7 @@ import { CodeBlockWriter, SourceFile } from 'ts-morph';
 
 import { TypescriptGenerator } from '../common/typescript-generator';
 import { Field } from '../config.schemas';
-import { humanize } from '../utils/string.utils';
+import { humanize, quote } from '../utils/string.utils';
 import { objectToString, WritableObject, writeObject } from '../utils/writer.utils';
 
 export class FormComponentGenerator extends TypescriptGenerator {
@@ -93,7 +93,25 @@ export class FormComponentGenerator extends TypescriptGenerator {
 
     switch (field.type) {
       case 'string':
-        writer.writeLine('<Input />');
+        if (field.options) {
+          writer
+            .writeLine('<Select options={[')
+            .write(
+              field.options
+                .map(option =>
+                  objectToString({
+                    label: quote(option.label),
+                    value: quote(option.value),
+                  })
+                )
+                .join(',')
+            )
+            .write(']} ')
+            .write('allowClear')
+            .write(' />');
+        } else {
+          writer.writeLine('<Input />');
+        }
         break;
       case 'int':
       case 'double':
@@ -186,16 +204,23 @@ export class FormComponentGenerator extends TypescriptGenerator {
 
     switch (field.type) {
       case 'date':
-      case 'string':
-        type = 'string';
+      case 'string': {
+        if (field.type === 'string' && field.options) {
+          type = field.options.map(o => quote(o.value)).join('|');
+        } else {
+          type = 'string';
+        }
         break;
+      }
       case 'int':
-      case 'double':
+      case 'double': {
         type = 'number';
         break;
-      case 'boolean':
+      }
+      case 'boolean': {
         type = 'boolean';
         break;
+      }
       default:
         throw new Error('Field type not implemented');
     }
@@ -237,14 +262,27 @@ export class FormComponentGenerator extends TypescriptGenerator {
     const fields = Object.values(this.config.fields);
 
     if (fields.some(f => f.type === 'string')) {
-      file.addImportDeclaration({
-        moduleSpecifier: this.getRelativeImportPath(
-          this.config.web.rootPath,
-          this.config.web.inputComponentFilePath,
-          file
-        ),
-        namedImports: ['Input'],
-      });
+      if (fields.some(f => f.type === 'string' && f.options === undefined)) {
+        file.addImportDeclaration({
+          moduleSpecifier: this.getRelativeImportPath(
+            this.config.web.rootPath,
+            this.config.web.inputComponentFilePath,
+            file
+          ),
+          namedImports: ['Input'],
+        });
+      }
+
+      if (fields.some(f => f.type === 'string' && f.options?.length)) {
+        file.addImportDeclaration({
+          moduleSpecifier: this.getRelativeImportPath(
+            this.config.web.rootPath,
+            this.config.web.selectComponentFilePath,
+            file
+          ),
+          namedImports: ['Select'],
+        });
+      }
     }
 
     if (fields.some(f => f.type === 'int' || f.type === 'double')) {

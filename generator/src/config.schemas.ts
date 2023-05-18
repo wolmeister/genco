@@ -16,6 +16,15 @@ export const stringFieldSchema = baseFieldSchema.extend({
       maxLength: z.number().int().min(1).optional(),
     })
     .optional(),
+  options: z
+    .array(
+      z.object({
+        value: z.string(),
+        label: z.string(),
+      })
+    )
+    .min(2)
+    .optional(),
 });
 
 export const intFieldSchema = baseFieldSchema.extend({
@@ -121,6 +130,7 @@ export const configSchema = z.object({
     inputNumberComponentFilePath: z.string().default('antd'),
     checkboxComponentFilePath: z.string().default('antd'),
     datePickerComponentFilePath: z.string().default('antd'),
+    selectComponentFilePath: z.string().default('antd'),
     tableComponentFilePath: z.string().default('antd'),
     modalFilePath: z.string().default('antd'),
     messageFilePath: z.string().default('antd'),

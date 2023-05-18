@@ -109,9 +109,12 @@ export class UpdatePageGenerator extends TypescriptGenerator {
         });
 
         writer.writeLine('');
-        writer.write(
-          `return <${this.pascalCaseModel}Form mode="update" onSubmit={handleSubmit} />`
-        );
+        writer
+          .write(`return <${this.pascalCaseModel}Form `)
+          .write('mode="update"')
+          .write(`initialValue={${this.camelCaseModel}Query.data}`)
+          .write('onSubmit={handleSubmit}')
+          .write('/>');
       },
     });
   }

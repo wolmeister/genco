@@ -46,6 +46,14 @@
       "type": "boolean",
       "required": true,
       "default": true
+    },
+    "communicationMethod": {
+      "type": "string",
+      "required": true,
+      "options": [
+        { "value": "email", "label": "Email" },
+        { "value": "sms", "label": "SMS" }
+      ]
     }
   }
 }

@@ -2,7 +2,7 @@ import path from 'path';
 import { SourceFile } from 'ts-morph';
 
 import { Config, Field } from '../config.schemas';
-import { pascalCase } from '../utils/string.utils';
+import { pascalCase, quote } from '../utils/string.utils';
 import { WritableObject, writeObject } from '../utils/writer.utils';
 
 export class ApiTypesGenerator {
@@ -123,16 +123,23 @@ export class ApiTypesGenerator {
 
     switch (field.type) {
       case 'date':
-      case 'string':
-        type = 'string';
+      case 'string': {
+        if (field.type === 'string' && field.options) {
+          type = field.options.map(o => quote(o.value)).join('|');
+        } else {
+          type = 'string';
+        }
         break;
+      }
       case 'int':
-      case 'double':
+      case 'double': {
         type = 'number';
         break;
-      case 'boolean':
+      }
+      case 'boolean': {
         type = 'boolean';
         break;
+      }
       default:
         throw new Error('Field type not implemented');
     }
