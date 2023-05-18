@@ -2,6 +2,7 @@ import path from 'path';
 import { SourceFile, VariableDeclarationKind } from 'ts-morph';
 
 import { Config, Field } from '../config.schemas';
+import { logger } from '../logger';
 import { kebabCase, pascalCase, quote } from '../utils/string.utils';
 import { objectToString, WritableObject, writeObject } from '../utils/writer.utils';
 
@@ -211,36 +212,50 @@ export class SchemasGenerator {
   private getTypeboxFieldSchema(field: Field, responseSchema: boolean): string {
     const options: WritableObject = {};
     let schema: string;
+    let schemaArguments: string | null = null;
 
     switch (field.type) {
-      case 'string':
+      case 'string': {
+        if (field.options) {
+          if (field.format) {
+            logger.warn(`Cannot use options with format on field, ignoring format`);
+          }
+          if (field.validations) {
+            logger.warn(`Cannot use validations with format on field, ignoring validations`);
+          }
+
+          schema = `Type.Union`;
+          schemaArguments = `[${field.options.map(o => `Type.Literal(${quote(o.value)})`)}]`;
+          break;
+        }
+
         schema = 'Type.String';
         if (field.format) {
           options.format = quote(field.format);
         }
         if (field.validations) {
-          options.validations = {};
           if (field.validations.minLength !== undefined) {
-            options.validations.minLength = String(field.validations.minLength);
+            options.minLength = String(field.validations.minLength);
           }
           if (field.validations.maxLength !== undefined) {
-            options.validations.maxLength = String(field.validations.maxLength);
+            options.maxLength = String(field.validations.maxLength);
           }
         }
         break;
+      }
       case 'int':
-      case 'double':
+      case 'double': {
         schema = `Type.${field.type === 'int' ? 'Integer' : 'Number'}`;
         if (field.validations) {
-          options.validations = {};
           if (field.validations.min !== undefined) {
-            options.validations.minimum = String(field.validations.min);
+            options.minimum = String(field.validations.min);
           }
           if (field.validations.max !== undefined) {
-            options.validations.maximum = String(field.validations.max);
+            options.maximum = String(field.validations.max);
           }
         }
         break;
+      }
       case 'boolean':
         schema = 'Type.Boolean';
         break;
@@ -261,7 +276,14 @@ export class SchemasGenerator {
     }
 
     schema += '(';
+    if (schemaArguments) {
+      schema += schemaArguments;
+    }
     if (Object.keys(options).length > 0) {
+      if (schemaArguments) {
+        schema += ',';
+      }
+
       schema += objectToString(options);
     }
     schema += ')';

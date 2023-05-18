@@ -16,7 +16,7 @@ const fieldTypeToPrismaType: Record<Field['type'], PrismaFieldType> = {
 
 type PrismaField = {
   name: string;
-  type: PrismaFieldType;
+  type: string;
   required: boolean;
   decorator: string | null;
 };
@@ -36,8 +36,15 @@ export class PrismaGenerator {
       // createdAt is the largest default field
       .concat('createdAt'.length)
       .sort((a, b) => b - a)[0];
-    this.largestFieldType = Object.values(this.config.fields)
-      .map(f => fieldTypeToPrismaType[f.type].length + (f.required ? 0 : 1))
+    this.largestFieldType = Object.entries(this.config.fields)
+      .map(([fieldName, field]) => {
+        let length = fieldTypeToPrismaType[field.type].length;
+        if (field.type === 'string' && field.options) {
+          // Enum name
+          length = Math.max(length, (this.pascalCaseModel + pascalCase(fieldName)).length);
+        }
+        return length + (field.required ? 0 : 1);
+      })
       // DateTime is the largest default field type
       .concat('DateTime'.length)
       .sort((a, b) => b - a)[0];
@@ -66,6 +73,33 @@ export class PrismaGenerator {
       prismaSchemaLines.push('');
     }
 
+    // Add enums
+    for (const [fieldName, field] of Object.entries(this.config.fields)) {
+      if (field.type !== 'string' || !field.options) {
+        continue;
+      }
+
+      const enumName = this.pascalCaseModel + pascalCase(fieldName);
+
+      const existingEnumStartIndex = prismaSchemaLines.findIndex(l =>
+        l.includes(`enum ${enumName} {`)
+      );
+      if (existingEnumStartIndex !== -1) {
+        const existingEnumLines = prismaSchemaLines
+          .slice(existingEnumStartIndex)
+          .findIndex(l => l.includes('}'));
+        // We need to remove the empty line too
+        prismaSchemaLines.splice(existingEnumStartIndex, existingEnumLines + 2);
+      }
+
+      prismaSchemaLines.push(`enum ${enumName} {`);
+      for (const option of field.options) {
+        prismaSchemaLines.push(`  ${option.value}`);
+      }
+      prismaSchemaLines.push(`}`);
+      prismaSchemaLines.push('');
+    }
+
     // Generate the model, line by line
     prismaSchemaLines.push(`model ${this.pascalCaseModel} {`);
     prismaSchemaLines.push(
@@ -78,10 +112,15 @@ export class PrismaGenerator {
     );
 
     for (const [fieldName, field] of Object.entries(this.config.fields)) {
+      let type: string = fieldTypeToPrismaType[field.type];
+      if (field.type === 'string' && field.options) {
+        type = this.pascalCaseModel + pascalCase(fieldName);
+      }
+
       prismaSchemaLines.push(
         this.serializePrismaField({
           name: fieldName,
-          type: fieldTypeToPrismaType[field.type],
+          type,
           required: field.required,
           decorator: field.unique ? '@unique' : null,
         })
