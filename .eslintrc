@@ -10,6 +10,10 @@
   "rules": {
     // plugin rules
     "import/extensions": ["error", "ignorePackages", { "ts": "never", "tsx": "never" }],
+    "import/no-extraneous-dependencies": [
+      "error",
+      { "devDependencies": ["**/*.test.ts", "**/testing.ts", "**/jest.setup.ts"] }
+    ],
     "import/prefer-default-export": "off",
     "simple-import-sort/imports": "error",
     "prettier/prettier": "error",
