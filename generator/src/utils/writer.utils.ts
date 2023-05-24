@@ -1,14 +1,13 @@
 import { CodeBlockWriter } from 'ts-morph';
 
-export type WritableObject = Record<
-  string,
-  string | Record<string, string | Record<string, string>>
->;
+export interface WritableObject {
+  [key: string]: string | WritableObject;
+}
 
 export function writeObject(writer: CodeBlockWriter, obj: WritableObject): void {
   writer.block(() => {
     for (const [key, value] of Object.entries(obj)) {
-      writer.write(key).write(': ');
+      writer.write(key).conditionalWrite(typeof value !== 'string' || value.length > 0, ': ');
       if (typeof value === 'string') {
         writer.write(value);
       } else {

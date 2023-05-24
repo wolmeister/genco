@@ -104,7 +104,7 @@ export const configSchema = z.object({
     rootPath: z.string(),
     tsconfigFilePath: z.string().default('tsconfig.json'),
     modulesFolderPath: z.string().default('src/modules'),
-    appFilePath: z.string().default('src/app.ts'),
+    appFilePath: z.string().default('./src/app.ts'),
     appVariableName: z.string().default('app'),
     prismaFilePath: z.string().default('prisma/schema.prisma'),
     prismaClientFilePath: z.string().default('src/prisma'),
@@ -112,6 +112,8 @@ export const configSchema = z.object({
     typeboxTypesFilePath: z.string().default('src/common/typebox-types'),
     checkPermissionFilePath: z.string().default('src/modules/auth'),
     loggerFilePath: z.string().default('src/logger'),
+    jwtFilePath: z.string().default('./src/modules/auth/jwt.ts'),
+    prismaMockFilePath: z.string().default('./src/testing.ts'),
   }),
   web: z.object({
     rootPath: z.string(),

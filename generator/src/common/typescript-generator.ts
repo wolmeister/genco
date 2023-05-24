@@ -18,6 +18,12 @@ export abstract class TypescriptGenerator extends BaseGenerator {
 
     const importPath = path.join(rootPath, importOrLibPath);
     const importRelativePath = path.relative(path.dirname(file.getFilePath()), importPath);
+    if (importRelativePath.endsWith('.ts')) {
+      return importRelativePath.substring(0, importRelativePath.length - 3);
+    }
+    if (importRelativePath.endsWith('.tsx')) {
+      return importRelativePath.substring(0, importRelativePath.length - 4);
+    }
     return importRelativePath;
   }
 }

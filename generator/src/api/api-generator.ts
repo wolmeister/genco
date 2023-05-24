@@ -12,6 +12,7 @@ import { PrismaGenerator } from './prisma-generator';
 import { RoutesGenerator } from './routes-generator';
 import { SchemasGenerator } from './schemas-generator';
 import { ServiceGenerator } from './service-generator';
+import { TestGenerator } from './test-generator';
 
 export class ApiGenerator {
   private readonly kebabCaseModel: string;
@@ -83,7 +84,15 @@ export class ApiGenerator {
     await this.generateIndex(indexFile);
     await indexFile.save();
 
-    // Register the modoule
+    // Generate tests
+    const testFile = tsProject.createSourceFile(
+      path.join(modulesFolderPath, `./${this.kebabCaseModel}.test.ts`)
+    );
+    const testGenerator = new TestGenerator(this.config);
+    await testGenerator.generate(testFile);
+    await testFile.save();
+
+    // Register the module
     const appPath = path.join(this.config.api.rootPath, this.config.api.appFilePath);
     const appFile = tsProject.getSourceFileOrThrow(appPath);
     await this.registerModule(appFile, modulesFolderPath);
@@ -96,6 +105,7 @@ export class ApiGenerator {
       serviceFile.getFilePath(),
       errorsFile.getFilePath(),
       indexFile.getFilePath(),
+      testFile.getFilePath(),
       appFile.getFilePath(),
     ]);
 

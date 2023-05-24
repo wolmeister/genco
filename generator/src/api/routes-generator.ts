@@ -107,7 +107,7 @@ export class RoutesGenerator {
       Params: `${this.pascalCaseModel}IdParams`,
       Reply: `${this.pascalCaseModel}Response`,
     });
-    writer.write('>(').quote(`/${this.pluralKebabCaseModel}:/id`).write(',');
+    writer.write('>(').quote(`/${this.pluralKebabCaseModel}/:id`).write(',');
     writeObject(writer, {
       schema: {
         tags: `['${this.pluralPascalCaseModel}']`,
