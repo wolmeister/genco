@@ -1,5 +1,4 @@
 import wretch, { ConfiguredMiddleware } from 'wretch';
-import QueryStringAddon from 'wretch/addons/queryString';
 
 import { getJwt } from '../auth/jwt';
 
@@ -15,4 +14,4 @@ const authMiddleware: ConfiguredMiddleware = next => {
   };
 };
 
-export const apiClient = wretch('/api').addon(QueryStringAddon).middlewares([authMiddleware]);
+export const apiClient = wretch('/api').middlewares([authMiddleware]);

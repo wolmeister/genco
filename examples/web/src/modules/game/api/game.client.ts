@@ -1,12 +1,9 @@
 import { apiClient } from '../../common/api/api.client';
+import { withQuery } from '../../common/api/api.utils';
 import { CreateGameData, FindGamesFilter, Game, PaginatedGame, UpdateGameData } from './game.types';
 
 export function findGames(filter?: FindGamesFilter): Promise<PaginatedGame> {
-  return apiClient
-    .query(filter ?? {})
-    .url('/games')
-    .get()
-    .json<PaginatedGame>();
+  return apiClient.url(withQuery('/games', filter)).get().json<PaginatedGame>();
 }
 
 export function findGame(id: string): Promise<Game> {
