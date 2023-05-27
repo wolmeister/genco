@@ -122,6 +122,7 @@ export const configSchema = z.object({
     paginatedFilePath: z.string().default('src/modules/common/api/common.types'),
     apiClientFilePath: z.string().default('src/modules/common/api/api.client'),
     apiErrorsFilePath: z.string().default('./src/modules/common/api/api.errors'),
+    apiUtilsFilePath: z.string().default('./src/modules/common/api/api.utils'),
     routerFilePath: z.string().default('./src/router.ts'),
     routerVariableName: z.string().default('router'),
     skeletonComponentFilePath: z.string().default('antd'),

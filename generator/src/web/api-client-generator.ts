@@ -1,22 +1,9 @@
 import path from 'path';
 import { SourceFile } from 'ts-morph';
 
-import { Config } from '../config.schemas';
-import { kebabCase, pascalCase } from '../utils/string.utils';
+import { TypescriptGenerator } from '../common/typescript-generator';
 
-export class ApiClientGenerator {
-  private readonly kebabCaseModel: string;
-  private readonly pascalCaseModel: string;
-  private readonly pluralKebabCaseModel: string;
-  private readonly pluralPascalCaseModel: string;
-
-  constructor(private config: Config) {
-    this.kebabCaseModel = kebabCase(this.config.model);
-    this.pascalCaseModel = pascalCase(this.config.model);
-    this.pluralKebabCaseModel = kebabCase(this.config.model, true);
-    this.pluralPascalCaseModel = pascalCase(this.config.model, true);
-  }
-
+export class ApiClientGenerator extends TypescriptGenerator {
   async generate(file: SourceFile): Promise<void> {
     this.addImports(file);
     this.addFunctions(file);
@@ -56,8 +43,7 @@ export class ApiClientGenerator {
       isExported: true,
       statements: writer => {
         writer
-          .write(`return apiClient.url(${this.getApiPath()})`)
-          .write(`.query(filter ?? {})`)
+          .write(`return apiClient.url(withQuery(${this.getApiPath()}, filter))`)
           .write(`.get().json<Paginated${this.pascalCaseModel}>();`);
       },
     });
@@ -174,6 +160,15 @@ export class ApiClientGenerator {
     if (operations.findMultiple) {
       typesImportDeclaration.addNamedImport(`Find${this.pluralPascalCaseModel}Filter`);
       typesImportDeclaration.addNamedImport(`Paginated${this.pascalCaseModel}`);
+
+      file.addImportDeclaration({
+        moduleSpecifier: this.getRelativeImportPath(
+          this.config.web.rootPath,
+          this.config.web.apiUtilsFilePath,
+          file
+        ),
+        namedImports: ['withQuery'],
+      });
     }
     if (operations.create) {
       typesImportDeclaration.addNamedImport(`Create${this.pascalCaseModel}Data`);
