@@ -11,9 +11,13 @@ import { ApiTypesGenerator } from './api-types-generator';
 import { ErrorComponentGenerator } from './error-component-generator';
 import { FormComponentGenerator } from './form-component-generator';
 import { CreatePageGenerator } from './pages/create-page-generator';
+import { CreatePageTestGenerator } from './pages/create-page-test-generator';
 import { SearchPageGenerator } from './pages/search-page-generator';
+import { SearchPageTestGenerator } from './pages/search-page-test-generator';
 import { UpdatePageGenerator } from './pages/update-page-generator';
+import { UpdatePageTestGenerator } from './pages/update-page-test-generator';
 import { ViewPageGenerator } from './pages/view-page-generator';
+import { ViewPageTestGenerator } from './pages/view-page-test-generator';
 import { RoutesGenerator } from './routes-generator';
 import { SkeletonComponentGenerator } from './skeleton-component-generator';
 
@@ -104,6 +108,14 @@ export class WebGenerator extends BaseGenerator {
       await searchPageGenerator.generate(searchPageFile);
       await searchPageFile.save();
       filesToLint.push(searchPageFile);
+
+      const searchPageTestFile = tsProject.createSourceFile(
+        path.join(modulesFolderPath, 'pages', `${this.pluralPascalCaseModel}Page.test.tsx`)
+      );
+      const searchPageTestGenerator = new SearchPageTestGenerator(this.config);
+      await searchPageTestGenerator.generate(searchPageTestFile);
+      await searchPageTestFile.save();
+      filesToLint.push(searchPageTestFile);
     }
 
     // Generate view page
@@ -115,6 +127,14 @@ export class WebGenerator extends BaseGenerator {
       await viewPageGenerator.generate(viewPageFile);
       await viewPageFile.save();
       filesToLint.push(viewPageFile);
+
+      const viewPageTestFile = tsProject.createSourceFile(
+        path.join(modulesFolderPath, 'pages', `${this.pascalCaseModel}Page.test.tsx`)
+      );
+      const viewPageTestGenerator = new ViewPageTestGenerator(this.config);
+      await viewPageTestGenerator.generate(viewPageTestFile);
+      await viewPageTestFile.save();
+      filesToLint.push(viewPageTestFile);
     }
 
     // Generate create page
@@ -126,6 +146,14 @@ export class WebGenerator extends BaseGenerator {
       await createPageGenerator.generate(createPageFile);
       await createPageFile.save();
       filesToLint.push(createPageFile);
+
+      const createPageTestFile = tsProject.createSourceFile(
+        path.join(modulesFolderPath, 'pages', `Create${this.pascalCaseModel}Page.test.tsx`)
+      );
+      const createPageTestGenerator = new CreatePageTestGenerator(this.config);
+      await createPageTestGenerator.generate(createPageTestFile);
+      await createPageTestFile.save();
+      filesToLint.push(createPageTestFile);
     }
 
     // Generate update page
@@ -137,6 +165,14 @@ export class WebGenerator extends BaseGenerator {
       await updatePageGenerator.generate(updatePageFile);
       await updatePageFile.save();
       filesToLint.push(updatePageFile);
+
+      const updatePageTestFile = tsProject.createSourceFile(
+        path.join(modulesFolderPath, 'pages', `Update${this.pascalCaseModel}Page.test.tsx`)
+      );
+      const updatePageTestGenerator = new UpdatePageTestGenerator(this.config);
+      await updatePageTestGenerator.generate(updatePageTestFile);
+      await updatePageTestFile.save();
+      filesToLint.push(updatePageTestFile);
     }
 
     // Generate routes
