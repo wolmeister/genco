@@ -2,6 +2,7 @@ import { Config } from '../config.schemas';
 import { camelCase, kebabCase, pascalCase, snakeCase } from '../utils/string.utils';
 
 export abstract class BaseGenerator {
+  protected readonly model: string;
   protected readonly camelCaseModel: string;
   protected readonly kebabCaseModel: string;
   protected readonly pascalCaseModel: string;
@@ -12,6 +13,7 @@ export abstract class BaseGenerator {
   protected readonly pluralSnakeCaseModel: string;
 
   constructor(protected config: Config) {
+    this.model = config.model;
     this.camelCaseModel = camelCase(config.model);
     this.kebabCaseModel = kebabCase(config.model);
     this.pascalCaseModel = pascalCase(config.model);
