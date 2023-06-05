@@ -1,13 +1,19 @@
-export function withQuery(endpoint: string, query?: Record<string, unknown>): string {
-  const url = new URL(endpoint);
+export function withQuery(url: string, query?: Record<string, unknown>): string {
+  const searchParams = new URLSearchParams();
+  let isEmpty = true;
 
   if (query) {
     for (const [key, value] of Object.entries(query)) {
       if (value !== undefined && value !== null) {
-        url.searchParams.set(key, String(value));
+        searchParams.set(key, String(value));
+        isEmpty = false;
       }
     }
   }
 
-  return url.toString();
+  if (isEmpty) {
+    return url;
+  }
+
+  return `${url}?${searchParams.toString()}`;
 }
