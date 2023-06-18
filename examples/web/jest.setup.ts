@@ -1,6 +1,8 @@
 /// <reference types="@types/jest" />
 import 'whatwg-fetch';
 
+import { setLogger } from 'react-query';
+
 Object.defineProperty(window, 'matchMedia', {
   value: () => {
     return {
@@ -12,5 +14,17 @@ Object.defineProperty(window, 'matchMedia', {
         // Do nothing.
       },
     };
+  },
+});
+
+setLogger({
+  log: () => {
+    // No log
+  },
+  warn: () => {
+    // No log
+  },
+  error: () => {
+    // No log
   },
 });

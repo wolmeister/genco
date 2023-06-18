@@ -3,7 +3,7 @@ export type Paginated<T> = {
     cursor: string;
     node: T;
   }[];
-  totalCount: string;
+  totalCount: number;
   pageInfo: {
     hasNextPage: boolean;
     hasPreviousPage: boolean;

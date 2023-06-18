@@ -16,8 +16,8 @@ export function kebabCase(value: string, plural = false): string {
   return snakeCase(value, plural).replace('_', '-');
 }
 
-export function quote(value: string): string {
-  return `'${value}'`;
+export function quote(value: string, quoteSymbol = "'"): string {
+  return quoteSymbol + value + quoteSymbol;
 }
 
 export function humanize(value: string, lowFirstLetter = false, plural = false): string {
