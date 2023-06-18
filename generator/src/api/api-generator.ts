@@ -2,10 +2,10 @@ import { rm } from 'fs/promises';
 import path from 'path';
 import { Project, SourceFile, SyntaxKind, VariableDeclarationKind } from 'ts-morph';
 
-import { Config } from '../config.schemas';
+import { BaseGenerator } from '../common/base-generator';
 import { Linter } from '../linter';
 import { logger } from '../logger';
-import { camelCase, kebabCase, pascalCase, quote } from '../utils/string.utils';
+import { quote } from '../utils/string.utils';
 import { objectToString } from '../utils/writer.utils';
 import { ErrorsGenerator } from './errors-generator';
 import { PrismaGenerator } from './prisma-generator';
@@ -14,17 +14,7 @@ import { SchemasGenerator } from './schemas-generator';
 import { ServiceGenerator } from './service-generator';
 import { TestGenerator } from './test-generator';
 
-export class ApiGenerator {
-  private readonly kebabCaseModel: string;
-  private readonly pascalCaseModel: string;
-  private readonly camelCaseModel: string;
-
-  constructor(private config: Config) {
-    this.kebabCaseModel = kebabCase(this.config.model);
-    this.pascalCaseModel = pascalCase(this.config.model);
-    this.camelCaseModel = camelCase(this.config.model);
-  }
-
+export class ApiGenerator extends BaseGenerator {
   async generate(): Promise<void> {
     logger.info('Generating api code...');
 

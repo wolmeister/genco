@@ -74,7 +74,7 @@ export class RoutesGenerator {
     writer.write('>(').quote(`/${this.pluralKebabCaseModel}`).write(',');
     writeObject(writer, {
       schema: {
-        tags: `['${this.pluralPascalCaseModel}']`,
+        tags: `['${this.pascalCaseModel}']`,
         querystring: `Find${this.pluralPascalCaseModel}QuerySchema`,
         response: {
           200: `Find${this.pluralPascalCaseModel}ResponseSchema`,
@@ -110,7 +110,7 @@ export class RoutesGenerator {
     writer.write('>(').quote(`/${this.pluralKebabCaseModel}/:id`).write(',');
     writeObject(writer, {
       schema: {
-        tags: `['${this.pluralPascalCaseModel}']`,
+        tags: `['${this.pascalCaseModel}']`,
         params: `${this.pascalCaseModel}IdParamsSchema`,
         response: {
           200: `${this.pascalCaseModel}ResponseSchema`,
@@ -146,7 +146,7 @@ export class RoutesGenerator {
     writer.write('>(').quote(`/${this.pluralKebabCaseModel}`).write(',');
     writeObject(writer, {
       schema: {
-        tags: `['${this.pluralPascalCaseModel}']`,
+        tags: `['${this.pascalCaseModel}']`,
         body: `Create${this.pascalCaseModel}Schema`,
         response: {
           '201': `${this.pascalCaseModel}ResponseSchema`,
@@ -183,7 +183,7 @@ export class RoutesGenerator {
     writer.write('>(').quote(`/${this.pluralKebabCaseModel}/:id`).write(',');
     writeObject(writer, {
       schema: {
-        tags: `['${this.pluralPascalCaseModel}']`,
+        tags: `['${this.pascalCaseModel}']`,
         body: `Update${this.pascalCaseModel}Schema`,
         params: `${this.pascalCaseModel}IdParamsSchema`,
         response: {
@@ -220,7 +220,7 @@ export class RoutesGenerator {
     writer.write('>(').quote(`/${this.pluralKebabCaseModel}/:id`).write(',');
     writeObject(writer, {
       schema: {
-        tags: `['${this.pluralPascalCaseModel}']`,
+        tags: `['${this.pascalCaseModel}']`,
         params: `${this.pascalCaseModel}IdParamsSchema`,
         response: {
           '200': `${this.pascalCaseModel}ResponseSchema`,
