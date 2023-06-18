@@ -75,7 +75,10 @@ export class FormComponentGenerator extends TypescriptGenerator {
           this.addFormInputComponent(fieldName, field, writer);
         }
 
-        writer.write(`<Button type="primary" htmlType="submit">Submit</Button>`);
+        writer
+          .write(`{mode !== 'view' && (`)
+          .write(`<Button type="primary" htmlType="submit">Submit</Button>`)
+          .write(`)}`);
         writer.write('</Form>)');
       },
     });

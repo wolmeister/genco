@@ -1,7 +1,7 @@
 import { SourceFile } from 'ts-morph';
 
 import { TypescriptGenerator } from '../../common/typescript-generator';
-import { humanize } from '../../utils/string.utils';
+import { humanize, quote } from '../../utils/string.utils';
 import { objectToString } from '../../utils/writer.utils';
 
 export class SearchPageGenerator extends TypescriptGenerator {
@@ -21,8 +21,29 @@ export class SearchPageGenerator extends TypescriptGenerator {
         );
         writer.writeLine('');
 
+        writer.write('return (').write('<div>');
+
+        if (this.config.operations.create) {
+          writer
+            .write('<div style={')
+            .write(
+              objectToString({
+                display: quote('flex'),
+                justifyContent: quote('end'),
+                gap: quote('16px'),
+                marginBottom: quote('16px'),
+              })
+            )
+            .write('}>')
+            .write(
+              `<Button type="primary" onClick={() => navigate('/create-${this.kebabCaseModel}')}>`
+            )
+            .write('Create')
+            .write('</Button>')
+            .write('</div>');
+        }
+
         writer
-          .write('return (')
           .write('<Table ')
           .write(`dataSource={${this.pluralCamelCaseModel}Query.data?.edges.map(e => e.node)}`)
           .write(`loading={${this.pluralCamelCaseModel}Query.isLoading}`)
@@ -50,7 +71,7 @@ export class SearchPageGenerator extends TypescriptGenerator {
             .write(`/>`);
         }
 
-        writer.write('</Table>').write(');');
+        writer.write('</Table>').write('</div>').write(');');
       },
     });
   }
@@ -76,6 +97,14 @@ export class SearchPageGenerator extends TypescriptGenerator {
         file
       ),
       namedImports: ['Table'],
+    });
+    file.addImportDeclaration({
+      moduleSpecifier: this.getRelativeImportPath(
+        this.config.web.rootPath,
+        this.config.web.buttonComponentFilePath,
+        file
+      ),
+      namedImports: ['Button'],
     });
 
     // Api

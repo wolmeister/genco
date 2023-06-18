@@ -107,15 +107,26 @@ export class ViewPageGenerator extends TypescriptGenerator {
         writer
           .write('return (')
           .write('<div>')
+          .write('<div style={')
           .write(
-            `<${this.pascalCaseModel}Form mode="view" initialValue={${this.camelCaseModel}Query.data} />`
+            objectToString({
+              display: quote('flex'),
+              justifyContent: quote('end'),
+              gap: quote('16px'),
+              marginBottom: quote('16px'),
+            })
           )
+          .write('}>')
           .write(`<Button type="primary" onClick={handleEdit}>`)
           .write('Edit')
           .write('</Button>')
           .write(`<Button type="primary" danger onClick={handleDelete}>`)
           .write('Delete')
           .write('</Button>')
+          .write('</div>')
+          .write(
+            `<${this.pascalCaseModel}Form mode="view" initialValue={${this.camelCaseModel}Query.data} />`
+          )
           .write('</div>')
           .write(');');
       },
