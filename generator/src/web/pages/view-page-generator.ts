@@ -56,12 +56,12 @@ export class ViewPageGenerator extends TypescriptGenerator {
             .write('catch (error)')
             .block(() => {
               const errorName = `${this.snakeCaseModel.toUpperCase()}_NOT_FOUND`;
-              const humanModelname = humanize(this.pascalCaseModel);
+              const humanModelName = humanize(this.pascalCaseModel);
 
               deleteWriter
                 .write(`if (isApiError(error) && error.json.code === '${errorName}')`)
                 .block(() => {
-                  deleteWriter.write(`message.error('${humanModelname} already deleted!');`);
+                  deleteWriter.write(`message.error('${humanModelName} already deleted!');`);
                 })
                 .write('else')
                 .block(() => {

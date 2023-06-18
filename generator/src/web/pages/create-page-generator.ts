@@ -38,7 +38,9 @@ export class CreatePageGenerator extends TypescriptGenerator {
                 writer.write(
                   `message.success('${humanize(this.pascalCaseModel)} created successfully!');`
                 );
-                writer.write(`navigate('/${this.kebabCaseModel}/' + ${this.camelCaseModel}.id);`);
+                writer.write(
+                  `navigate('/${this.pluralKebabCaseModel}/' + ${this.camelCaseModel}.id);`
+                );
               })
               .write('catch (error)')
               .block(() => {
@@ -58,9 +60,9 @@ export class CreatePageGenerator extends TypescriptGenerator {
                   const errorName = `${this.snakeCaseModel.toUpperCase()}_${snakeCase(
                     fieldName
                   ).toUpperCase()}_NOT_UNIQUE`;
-                  const humanModelname = humanize(this.pascalCaseModel, true);
+                  const humanModelName = humanize(this.pascalCaseModel, true);
                   const humanFieldName = humanize(fieldName, true);
-                  const message = `A ${humanModelname} with this ${humanFieldName} already exists!`;
+                  const message = `A ${humanModelName} with this ${humanFieldName} already exists!`;
 
                   writer
                     .write(`if (isApiError(error) && error.json.code === '${errorName}')`)
